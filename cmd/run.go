@@ -6,7 +6,7 @@ import (
 )
 
 func NewRootCommand() *cobra.Command {
-	// RootCmd represents the base command when called without any subcommands
+	// RootCmd base command for our utility
 	return &cobra.Command{
 		Use:   "signal-generator",
 		Short: "A simple signal generation app",

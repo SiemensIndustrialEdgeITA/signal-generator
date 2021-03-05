@@ -20,3 +20,31 @@ Output sinks can be selected for the different apps among the following:
 - freqAnalyzer 
 ..
 
+
+## Usage
+
+This project is still under construction.
+As a first step a simple connection and streaming of constant data to the broker will be possible as follows:
+
+- 1 datapoint/sec
+- simpleJson schema:
+``json
+{
+  key: "",
+  value: 0 
+}
+``
+- topic:    /generator/simplejson
+- user/password: from cli options
+
+
+Can be launched as follows:
+```
+./signal-generator --user simatic --password simatic
+```
+PS: **user, password and topic** must exist in order to properly connect and publish the data 
+default databus hostname will be ```ie-databus:1883
+
+
+
+

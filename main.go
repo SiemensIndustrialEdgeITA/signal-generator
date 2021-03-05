@@ -11,6 +11,7 @@ func main() {
 
 	rand.Seed(time.Now().UnixNano())
 
+	// TODO(lumontec): initialize singleton logger
 	//	logs.InitLogs()
 	//	defer logs.FlushLogs()
 
