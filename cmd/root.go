@@ -32,8 +32,16 @@ var rootCmd = &cobra.Command{
 		gen, err := generator.NewGenerator(generator.LINEAR, conf)
 		if err != nil {
 		}
-		// Start data generation
-		gen.Start()
+		// Start data in parallel goroutine
+		go gen.Start()
+
+		// Stop after 5 seconds
+		go func() {
+			time.Sleep(5 * time.Second)
+			gen.Stop()
+		}()
+		time.Sleep(10 * time.Second)
+
 	},
 }
 
