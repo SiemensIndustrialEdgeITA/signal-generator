@@ -25,6 +25,7 @@ var rootCmd = &cobra.Command{
 		// Configure the data generator
 		conf := &generator.Config{
 			SampleRate: 1000 * time.Millisecond,
+			Bufflen:    1000,
 			MinVal:     0,
 			MaxVal:     100,
 		}
@@ -40,7 +41,7 @@ var rootCmd = &cobra.Command{
 			time.Sleep(5 * time.Second)
 			gen.Stop()
 		}()
-		time.Sleep(10 * time.Second)
+		time.Sleep(100 * time.Second)
 
 	},
 }

@@ -26,10 +26,16 @@ const (
 	SINE
 )
 
+type datapoint struct {
+	key string
+	ts  time.Time
+	val float64
+}
+
 func NewGenerator(gtype gentype, c *Config) (Generator, error) {
 	t := time.NewTicker(c.SampleRate)
-	ctrl := make(chan struct{})
-	o := make(chan struct{})
+	q := make(chan struct{})             // Unbuffered
+	o := make(chan datapoint, c.Bufflen) // Buffered
 
 	switch gtype {
 	case LINEAR:
@@ -40,7 +46,7 @@ func NewGenerator(gtype gentype, c *Config) (Generator, error) {
 			minVal:   c.MinVal,
 			maxVal:   c.MaxVal,
 			ticker:   t,
-			control:  ctrl,
+			quit:     q,
 			out:      o,
 		}, nil
 	case SINE:
@@ -48,7 +54,7 @@ func NewGenerator(gtype gentype, c *Config) (Generator, error) {
 			interval: c.SampleRate,
 			value:    0,
 			ticker:   t,
-			control:  ctrl,
+			quit:     q,
 			out:      o,
 		}, nil
 
@@ -64,8 +70,8 @@ type LinearGenerator struct {
 	minVal   int
 	maxVal   int
 	ticker   *time.Ticker
-	control  chan struct{}
-	out      chan struct{}
+	quit     chan struct{}
+	out      chan datapoint
 }
 
 type SineGenerator struct {
@@ -75,8 +81,8 @@ type SineGenerator struct {
 	ampl     int
 	period   int
 	ticker   *time.Ticker
-	control  chan struct{}
-	out      chan struct{}
+	quit     chan struct{}
+	out      chan datapoint
 }
 
 func (l *LinearGenerator) Start() {
@@ -84,11 +90,19 @@ func (l *LinearGenerator) Start() {
 	fmt.Println("interval:", l.interval)
 	for {
 		select {
-		case <-l.ticker.C:
+		case t := <-l.ticker.C:
+			fmt.Println("key:", "linear")
+			fmt.Println("ts:", t)
 			fmt.Println("value:", l.value)
 			intervalsec := float64(l.interval) / 1000000000
 			l.value = l.value + (l.coeff * intervalsec)
-		case <-l.control:
+			msg := datapoint{
+				key: "linear",
+				ts:  t,
+				val: l.value,
+			}
+			l.out <- msg
+		case <-l.quit:
 			fmt.Println("received close")
 			l.ticker.Stop()
 			return
@@ -97,7 +111,7 @@ func (l *LinearGenerator) Start() {
 }
 
 func (l *LinearGenerator) Stop() {
-	close(l.control)
+	close(l.quit)
 }
 
 func (s *SineGenerator) Start() {
