@@ -8,6 +8,8 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/SiemensIndustrialEdgeITA/signal-generator/generator"
+	"github.com/SiemensIndustrialEdgeITA/signal-generator/transform"
+	"github.com/SiemensIndustrialEdgeITA/signal-generator/types"
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
 )
@@ -23,26 +25,51 @@ var rootCmd = &cobra.Command{
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
 		// Configure the data generator
-		conf := &generator.Config{
+		gconf := generator.LinearConfig{
 			SampleRate: 1000 * time.Millisecond,
-			Bufflen:    1000,
 			MinVal:     0,
 			MaxVal:     100,
 		}
 		// Create new data generator
-		gen, err := generator.NewGenerator(generator.LINEAR, conf)
+		gen, err := generator.NewGenerator(generator.LINEAR, gconf)
 		if err != nil {
 		}
-		// Start data in parallel goroutine
+
+		// Configure the noise transform
+		tconf := transform.NoiseConfig{
+			MinVal: 0,
+			MaxVal: 100,
+		}
+
+		// Create new noise transform
+		tr, err := transform.NewTransform(transform.NOISE, tconf)
+		if err != nil {
+		}
+
+		// Create the channels
+		c1 := make(chan types.DataPoint, 1000)
+		c2 := make(chan types.DataPoint, 1000)
+
+		// Wire up stages with channnels
+		// gen -> c1 -> tr -> c2 -> pub
+		gen.SetOut(c1)
+		tr.SetIn(c1)
+		tr.SetOut(c2)
+
+		// Start noise transform in parallel goroutine
+		go tr.Start()
+
+		// Start data generation in parallel goroutine
 		go gen.Start()
 
-		// Stop after 5 seconds
-		go func() {
-			time.Sleep(5 * time.Second)
-			gen.Stop()
-		}()
-		time.Sleep(100 * time.Second)
-
+		for {
+			msg := <-c1
+			fmt.Println("msg received: \n",
+				"{	Ts:", msg.Ts,
+				"\n	Key:", msg.Key,
+				"\n	Val:", msg.Val,
+				"\n}")
+		}
 	},
 }
 
