@@ -65,9 +65,9 @@ var rootCmd = &cobra.Command{
 
 		for {
 			msg := <-c1
-			fmt.Println("genmsg received: { Ts:", msg.Ts, " Key:", msg.Key, " Val:", msg.Val, " }")
+			fmt.Println("generated: { Ts:", msg.Ts, " Key:", msg.Key, " Val:", msg.Val, " }")
 			msg = <-c2
-			fmt.Println("transmsg received: { Ts:", msg.Ts, " Key:", msg.Key, " Val:", msg.Val, " }")
+			fmt.Println("transformed: { Ts:", msg.Ts, " Key:", msg.Key, " Val:", msg.Val, " }")
 
 		}
 	},
