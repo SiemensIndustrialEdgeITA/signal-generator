@@ -24,6 +24,7 @@ const (
 	NOISE transType = iota
 )
 
+// Transform stage factory
 func NewTransform(ttype transType, c Config) (Transform, error) {
 	q := make(chan struct{}) // Unbuffered
 

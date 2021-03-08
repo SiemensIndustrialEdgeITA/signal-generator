@@ -37,8 +37,9 @@ var rootCmd = &cobra.Command{
 
 		// Configure the noise transform
 		tconf := transform.NoiseConfig{
-			MinVal: 0,
-			MaxVal: 100,
+			Coeff:  0,
+			MinVal: -10,
+			MaxVal: 10,
 		}
 
 		// Create new noise transform
@@ -64,11 +65,10 @@ var rootCmd = &cobra.Command{
 
 		for {
 			msg := <-c1
-			fmt.Println("msg received: \n",
-				"{	Ts:", msg.Ts,
-				"\n	Key:", msg.Key,
-				"\n	Val:", msg.Val,
-				"\n}")
+			fmt.Println("genmsg received: { Ts:", msg.Ts, " Key:", msg.Key, " Val:", msg.Val, " }")
+			msg = <-c2
+			fmt.Println("transmsg received: { Ts:", msg.Ts, " Key:", msg.Key, " Val:", msg.Val, " }")
+
 		}
 	},
 }
