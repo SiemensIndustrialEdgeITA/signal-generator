@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/SiemensIndustrialEdgeITA/signal-generator/generator"
+	"github.com/SiemensIndustrialEdgeITA/signal-generator/publisher"
 	"github.com/SiemensIndustrialEdgeITA/signal-generator/transform"
 	"github.com/SiemensIndustrialEdgeITA/signal-generator/types"
 	homedir "github.com/mitchellh/go-homedir"
@@ -24,13 +25,14 @@ var rootCmd = &cobra.Command{
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
+
 		// Configure the data generator
 		gconf := generator.LinearConfig{
 			SampleRate: 1000 * time.Millisecond,
 			MinVal:     0,
 			MaxVal:     100,
 		}
-		// Create new data generator
+		// Instance new data generator
 		gen, err := generator.NewGenerator(generator.LINEAR, gconf)
 		if err != nil {
 		}
@@ -42,20 +44,41 @@ var rootCmd = &cobra.Command{
 			MaxVal: 10,
 		}
 
-		// Create new noise transform
+		// Instance new noise transform
 		tr, err := transform.NewTransform(transform.NOISE, tconf)
+		if err != nil {
+		}
+
+		// Configure the publisher mqtt client
+		pconf := publisher.SimpleConfig{
+			Mqtt: publisher.MqttConfig{
+				Host:     "127.0.0.1",
+				Port:     1883,
+				User:     "user",
+				Password: "user",
+				ClientId: "clientid",
+			},
+		}
+
+		// Instance new publisher sink
+		pub, err := publisher.NewPublisher(publisher.SIMPLE, pconf)
 		if err != nil {
 		}
 
 		// Create the channels
 		c1 := make(chan types.DataPoint, 1000)
 		c2 := make(chan types.DataPoint, 1000)
+		c3 := make(chan types.DataPoint, 1000)
 
 		// Wire up stages with channnels
 		// gen -> c1 -> tr -> c2 -> pub
 		gen.SetOut(c1)
 		tr.SetIn(c1)
 		tr.SetOut(c2)
+		pub.SetIn(c3)
+
+		// Start publisher
+		go pub.Start()
 
 		// Start noise transform in parallel goroutine
 		go tr.Start()

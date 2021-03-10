@@ -3,7 +3,7 @@ module github.com/SiemensIndustrialEdgeITA/signal-generator
 go 1.16
 
 require (
-	github.com/eclipse/paho.mqtt.golang v1.3.2 // indirect
+	github.com/eclipse/paho.mqtt.golang v1.3.2
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/sirupsen/logrus v1.2.0

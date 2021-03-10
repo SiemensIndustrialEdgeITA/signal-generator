@@ -7,30 +7,37 @@ import (
 )
 
 type SimpleConfig struct {
-	Host     string
-	Port     int
-	User     string
-	Password string
+	Mqtt MqttConfig
 }
 
 type SimpleSink struct {
-	log    *logger.Logger
-	Schema types.DataPoint
-	quit   chan struct{}
-	In     chan types.DataPoint
-	Sink   MqttClient
+	log  *logger.Logger
+	cfg  SimpleConfig
+	quit chan struct{}
+	In   chan types.DataPoint
+	Sink mqttClient
 }
 
 func (s *SimpleSink) Start() {
 	fmt.Println("starting simplesink publisher")
+
+	s.Sink.Connect()
+
 	for {
 		select {
 		case inmsg := <-s.In:
 			outmsg := types.DataPoint{
 				Key: inmsg.Key,
 				Ts:  inmsg.Ts,
-				Val: newVal,
+				Val: inmsg.Val,
 			}
+			s.Sink.Publish(&MqttMsg{
+				Topic:    "ciao",
+				Qos:      0,
+				Retained: false,
+				Payload:  outmsg,
+			})
+
 		case <-s.quit:
 			fmt.Println("received close")
 			return

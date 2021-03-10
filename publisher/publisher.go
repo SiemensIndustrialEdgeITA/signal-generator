@@ -7,6 +7,7 @@ import (
 	//	logger "github.com/sirupsen/logrus"
 )
 
+// Publisher streams data to the outside world
 type Publisher interface {
 	Start()
 	Stop()
@@ -22,21 +23,20 @@ const (
 	SIMPLE pubType = iota
 )
 
-// Publisher stage factory
-func NewPublisher(ttype pubType, c Config, mc MqttConfig) (Publisher, error) {
-	q := make(chan struct{}) // Unbuffered
+// NewPublisher is Publisher stage factory
+func NewPublisher(ttype pubType, c Config) (Publisher, error) {
 
 	switch ttype {
 	case SIMPLE:
-		var nc SimpleConfig = c.(SimpleConfig) // Assert config interface to Type
-		return &SimpleSink{
-			value:  0,
-			coeff:  nc.Coeff,
-			minVal: nc.MinVal,
-			maxVal: nc.MaxVal,
-			quit:   q,
-		}, nil
+		var sc SimpleConfig = c.(SimpleConfig) // Assert config interface to Type
 
+		// Create mqtt client
+		mclient := newMqttClient(sc.Mqtt)
+
+		return &SimpleSink{
+			cfg:  sc,
+			Sink: mclient, // Inject the mqtt client
+		}, nil
 	}
 	return nil, fmt.Errorf("could not create publisher with type: %d", ttype)
 }
