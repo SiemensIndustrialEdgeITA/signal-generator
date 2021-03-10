@@ -16,28 +16,25 @@ type LinearConfig struct {
 }
 
 type LinearGenerator struct {
-	log      *logger.Logger
-	interval time.Duration
-	value    float64
-	coeff    float64
-	minVal   int
-	maxVal   int
-	ticker   *time.Ticker
-	quit     chan struct{}
-	Out      chan types.DataPoint
+	log    *logger.Logger
+	cfg    LinearConfig
+	value  float64
+	ticker *time.Ticker
+	quit   chan struct{}
+	Out    chan types.DataPoint
 }
 
 func (l *LinearGenerator) Start() {
 	fmt.Println("starting linear generation")
-	fmt.Println("interval:", l.interval)
+	fmt.Println("interval:", l.cfg.SampleRate.Milliseconds())
 	for {
 		select {
 		case t := <-l.ticker.C:
 			//			fmt.Println("key:", "linear")
 			//			fmt.Println("ts:", t)
 			//			fmt.Println("value:", l.value)
-			intervalsec := float64(l.interval) / 1000000000
-			l.value = l.value + (l.coeff * intervalsec)
+			intervalsec := float64(l.cfg.SampleRate.Seconds())
+			l.value = l.value + (l.cfg.Coeff * intervalsec)
 			msg := types.DataPoint{
 				Key: "linear",
 				Ts:  t,

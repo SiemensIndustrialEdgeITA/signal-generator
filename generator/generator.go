@@ -33,22 +33,19 @@ func NewGenerator(gtype gentype, c Config) (Generator, error) {
 		var lc LinearConfig = c.(LinearConfig) // Assert config interface to Type
 		t := time.NewTicker(lc.SampleRate)
 		return &LinearGenerator{
-			interval: lc.SampleRate,
-			value:    0,
-			coeff:    1,
-			minVal:   lc.MinVal,
-			maxVal:   lc.MaxVal,
-			ticker:   t,
-			quit:     q,
+			cfg:    lc,
+			value:  0,
+			ticker: t,
+			quit:   q,
 		}, nil
 	case SINE:
 		var sc SineConfig = c.(SineConfig) // Assert config interface to Type
 		t := time.NewTicker(sc.SampleRate)
 		return &SineGenerator{
-			interval: sc.SampleRate,
-			value:    0,
-			ticker:   t,
-			quit:     q,
+			cfg:    sc,
+			value:  0,
+			ticker: t,
+			quit:   q,
 		}, nil
 
 	}

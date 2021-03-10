@@ -15,19 +15,17 @@ type SineConfig struct {
 }
 
 type SineGenerator struct {
-	log       *logger.Logger
-	interval  time.Duration
-	value     float64
-	Period    float64
-	Amplitude float64
-	ticker    *time.Ticker
-	quit      chan struct{}
-	Out       chan types.DataPoint
+	log    *logger.Logger
+	cfg    SineConfig
+	value  float64
+	ticker *time.Ticker
+	quit   chan struct{}
+	Out    chan types.DataPoint
 }
 
 func (s *SineGenerator) Start() {
 	fmt.Println("starting sine generation")
-	fmt.Println("interval:", s.interval)
+	fmt.Println("interval:", s.cfg.SampleRate)
 }
 
 func (s *SineGenerator) Stop() {

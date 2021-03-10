@@ -7,18 +7,18 @@ import (
 )
 
 type SimpleConfig struct {
-	Host   string
-	Port   int
-	MaxVal float64
+	Host     string
+	Port     int
+	User     string
+	Password string
 }
 
 type SimpleSink struct {
 	log    *logger.Logger
-	host   string
-	port   int
 	Schema types.DataPoint
 	quit   chan struct{}
 	In     chan types.DataPoint
+	Sink   MqttClient
 }
 
 func (s *SimpleSink) Start() {

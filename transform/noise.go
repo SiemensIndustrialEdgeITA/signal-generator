@@ -15,14 +15,12 @@ type NoiseConfig struct {
 }
 
 type NoiseTransform struct {
-	log    *logger.Logger
-	value  float64
-	coeff  float64
-	minVal float64
-	maxVal float64
-	quit   chan struct{}
-	In     chan types.DataPoint
-	Out    chan types.DataPoint
+	log   *logger.Logger
+	cfg   NoiseConfig
+	value float64
+	quit  chan struct{}
+	In    chan types.DataPoint
+	Out   chan types.DataPoint
 }
 
 func (n *NoiseTransform) Start() {
@@ -30,7 +28,7 @@ func (n *NoiseTransform) Start() {
 	for {
 		select {
 		case inmsg := <-n.In:
-			newVal := inmsg.Val + n.getNoiseForRange(n.minVal, n.maxVal)
+			newVal := inmsg.Val + n.getNoiseForRange(n.cfg.MinVal, n.cfg.MaxVal)
 			outmsg := types.DataPoint{
 				Key: inmsg.Key,
 				Ts:  inmsg.Ts,

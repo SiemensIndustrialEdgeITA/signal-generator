@@ -23,7 +23,7 @@ const (
 )
 
 // Publisher stage factory
-func NewTransform(ttype pubType, c Config) (Publisher, error) {
+func NewPublisher(ttype pubType, c Config, mc MqttConfig) (Publisher, error) {
 	q := make(chan struct{}) // Unbuffered
 
 	switch ttype {

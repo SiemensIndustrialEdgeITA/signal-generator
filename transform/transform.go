@@ -32,11 +32,9 @@ func NewTransform(ttype transType, c Config) (Transform, error) {
 	case NOISE:
 		var nc NoiseConfig = c.(NoiseConfig) // Assert config interface to Type
 		return &NoiseTransform{
-			value:  0,
-			coeff:  nc.Coeff,
-			minVal: nc.MinVal,
-			maxVal: nc.MaxVal,
-			quit:   q,
+			cfg:   nc,
+			value: 0,
+			quit:  q,
 		}, nil
 
 	}
