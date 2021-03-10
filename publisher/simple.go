@@ -36,7 +36,6 @@ func (s *SimpleSink) Start() {
 				Retained: false,
 				Payload:  outmsg,
 			})
-
 		case <-s.quit:
 			logger.Info("received close")
 			return

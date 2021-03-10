@@ -1,6 +1,7 @@
 package publisher
 
 import (
+	"encoding/json"
 	"fmt"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	logger "github.com/sirupsen/logrus"
@@ -50,7 +51,13 @@ func (mc *mqttClient) Connect() {
 }
 
 func (mc *mqttClient) Publish(msg *MqttMsg) {
-	token := mc.client.Publish(msg.Topic, msg.Qos, msg.Retained, msg.Payload)
+	logger.Info("publishing: {topic:", msg.Topic, ", qos:", msg.Qos, ", retain:", msg.Retained, ", payload:", msg.Payload, "}")
+	jsonpayload, err := json.Marshal(msg.Payload)
+	if err != nil {
+		panic(err)
+	}
+
+	token := mc.client.Publish(msg.Topic, msg.Qos, msg.Retained, jsonpayload)
 	token.Wait()
 }
 

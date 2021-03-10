@@ -12,7 +12,7 @@ import (
 	"github.com/SiemensIndustrialEdgeITA/signal-generator/transform"
 	"github.com/SiemensIndustrialEdgeITA/signal-generator/types"
 	homedir "github.com/mitchellh/go-homedir"
-	logger "github.com/sirupsen/logrus"
+	//	logger "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
@@ -69,14 +69,13 @@ var rootCmd = &cobra.Command{
 		// Create the channels
 		c1 := make(chan types.DataPoint, 1000)
 		c2 := make(chan types.DataPoint, 1000)
-		c3 := make(chan types.DataPoint, 1000)
 
 		// Wire up stages with channnels
 		// gen -> c1 -> tr -> c2 -> pub
 		gen.SetOut(c1)
 		tr.SetIn(c1)
 		tr.SetOut(c2)
-		pub.SetIn(c3)
+		pub.SetIn(c2)
 
 		// Start publisher
 		go pub.Start()
@@ -88,12 +87,12 @@ var rootCmd = &cobra.Command{
 		go gen.Start()
 
 		for {
-			msg := <-c1
-			logger.Info("generated: { Ts:", msg.Ts, " Key:", msg.Key, " Val:", msg.Val, " }")
-			msg = <-c2
-			logger.Info("transformed: { Ts:", msg.Ts, " Key:", msg.Key, " Val:", msg.Val, " }")
-			msg = <-c2
-			logger.Info("published: { Ts:", msg.Ts, " Key:", msg.Key, " Val:", msg.Val, " }")
+			//			msg := <-c1
+			//			logger.Info("generated: { Ts:", msg.Ts, " Key:", msg.Key, " Val:", msg.Val, " }")
+			//			msg = <-c2
+			//			logger.Info("transformed: { Ts:", msg.Ts, " Key:", msg.Key, " Val:", msg.Val, " }")
+			//			msg = <-c2
+			//			logger.Info("published: { Ts:", msg.Ts, " Key:", msg.Key, " Val:", msg.Val, " }")
 		}
 	},
 }
