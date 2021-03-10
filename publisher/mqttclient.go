@@ -3,6 +3,7 @@ package publisher
 import (
 	"fmt"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
+	logger "github.com/sirupsen/logrus"
 )
 
 type MqttMsg struct {
@@ -58,9 +59,9 @@ func (mc *mqttClient) Publish(msg *MqttMsg) {
 //}
 
 var connectHandler mqtt.OnConnectHandler = func(client mqtt.Client) {
-	fmt.Println("Connected")
+	logger.Info("Connected")
 }
 
 var connectLostHandler mqtt.ConnectionLostHandler = func(client mqtt.Client, err error) {
-	fmt.Printf("Connect lost: %v", err)
+	logger.Error("Connect lost:", err.Error())
 }

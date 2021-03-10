@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/SiemensIndustrialEdgeITA/signal-generator/types"
-	//	logger "github.com/sirupsen/logrus"
 )
 
 type Transform interface {

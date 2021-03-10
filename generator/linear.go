@@ -1,7 +1,6 @@
 package generator
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/SiemensIndustrialEdgeITA/signal-generator/types"
@@ -25,14 +24,11 @@ type LinearGenerator struct {
 }
 
 func (l *LinearGenerator) Start() {
-	fmt.Println("starting linear generation")
-	fmt.Println("interval:", l.cfg.SampleRate.Milliseconds())
+	logger.Info("starting linear generation")
+	logger.Info("interval:", l.cfg.SampleRate.Milliseconds())
 	for {
 		select {
 		case t := <-l.ticker.C:
-			//			fmt.Println("key:", "linear")
-			//			fmt.Println("ts:", t)
-			//			fmt.Println("value:", l.value)
 			intervalsec := float64(l.cfg.SampleRate.Seconds())
 			l.value = l.value + (l.cfg.Coeff * intervalsec)
 			msg := types.DataPoint{
@@ -42,7 +38,7 @@ func (l *LinearGenerator) Start() {
 			}
 			l.Out <- msg
 		case <-l.quit:
-			fmt.Println("received close")
+			logger.Info("received close")
 			l.ticker.Stop()
 			return
 		}

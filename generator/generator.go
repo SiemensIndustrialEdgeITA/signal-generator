@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/SiemensIndustrialEdgeITA/signal-generator/types"
-	//	logger "github.com/sirupsen/logrus"
 )
 
 type Generator interface {

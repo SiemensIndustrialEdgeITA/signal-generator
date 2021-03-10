@@ -1,7 +1,6 @@
 package transform
 
 import (
-	"fmt"
 	"github.com/SiemensIndustrialEdgeITA/signal-generator/types"
 	logger "github.com/sirupsen/logrus"
 	"math/rand"
@@ -15,7 +14,6 @@ type NoiseConfig struct {
 }
 
 type NoiseTransform struct {
-	log   *logger.Logger
 	cfg   NoiseConfig
 	value float64
 	quit  chan struct{}
@@ -24,7 +22,7 @@ type NoiseTransform struct {
 }
 
 func (n *NoiseTransform) Start() {
-	fmt.Println("starting noise transform")
+	logger.Info("starting noise transform")
 	for {
 		select {
 		case inmsg := <-n.In:
@@ -36,7 +34,7 @@ func (n *NoiseTransform) Start() {
 			}
 			n.Out <- outmsg
 		case <-n.quit:
-			fmt.Println("received close")
+			logger.Info("received close")
 			return
 		}
 	}

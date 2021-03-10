@@ -1,7 +1,6 @@
 package publisher
 
 import (
-	"fmt"
 	"github.com/SiemensIndustrialEdgeITA/signal-generator/types"
 	logger "github.com/sirupsen/logrus"
 )
@@ -19,7 +18,7 @@ type SimpleSink struct {
 }
 
 func (s *SimpleSink) Start() {
-	fmt.Println("starting simplesink publisher")
+	logger.Info("starting simplesink publisher")
 
 	s.Sink.Connect()
 
@@ -32,14 +31,14 @@ func (s *SimpleSink) Start() {
 				Val: inmsg.Val,
 			}
 			s.Sink.Publish(&MqttMsg{
-				Topic:    "ciao",
+				Topic:    "simple",
 				Qos:      0,
 				Retained: false,
 				Payload:  outmsg,
 			})
 
 		case <-s.quit:
-			fmt.Println("received close")
+			logger.Info("received close")
 			return
 		}
 	}

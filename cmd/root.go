@@ -12,6 +12,7 @@ import (
 	"github.com/SiemensIndustrialEdgeITA/signal-generator/transform"
 	"github.com/SiemensIndustrialEdgeITA/signal-generator/types"
 	homedir "github.com/mitchellh/go-homedir"
+	logger "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
@@ -54,9 +55,9 @@ var rootCmd = &cobra.Command{
 			Mqtt: publisher.MqttConfig{
 				Host:     "127.0.0.1",
 				Port:     1883,
-				User:     "user",
-				Password: "user",
-				ClientId: "clientid",
+				User:     "simatic",
+				Password: "simatic",
+				ClientId: "simaticclient",
 			},
 		}
 
@@ -88,10 +89,11 @@ var rootCmd = &cobra.Command{
 
 		for {
 			msg := <-c1
-			fmt.Println("generated: { Ts:", msg.Ts, " Key:", msg.Key, " Val:", msg.Val, " }")
+			logger.Info("generated: { Ts:", msg.Ts, " Key:", msg.Key, " Val:", msg.Val, " }")
 			msg = <-c2
-			fmt.Println("transformed: { Ts:", msg.Ts, " Key:", msg.Key, " Val:", msg.Val, " }")
-
+			logger.Info("transformed: { Ts:", msg.Ts, " Key:", msg.Key, " Val:", msg.Val, " }")
+			msg = <-c2
+			logger.Info("published: { Ts:", msg.Ts, " Key:", msg.Key, " Val:", msg.Val, " }")
 		}
 	},
 }
@@ -113,10 +115,10 @@ func init() {
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	rootCmd.Flags().StringP("user", "u", "simatic", "databus username")
-	rootCmd.Flags().StringP("password", "p", "simatic", "databus password")
-	rootCmd.MarkFlagRequired("user")
-	rootCmd.MarkFlagRequired("password")
+	//	rootCmd.Flags().StringP("user", "u", "simatic", "databus username")
+	//	rootCmd.Flags().StringP("password", "p", "simatic", "databus password")
+	//	rootCmd.MarkFlagRequired("user")
+	//	rootCmd.MarkFlagRequired("password")
 }
 
 // initConfig reads in config file and ENV variables if set.

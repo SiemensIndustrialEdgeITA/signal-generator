@@ -1,7 +1,6 @@
 package generator
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/SiemensIndustrialEdgeITA/signal-generator/types"
@@ -15,7 +14,6 @@ type SineConfig struct {
 }
 
 type SineGenerator struct {
-	log    *logger.Logger
 	cfg    SineConfig
 	value  float64
 	ticker *time.Ticker
@@ -24,8 +22,8 @@ type SineGenerator struct {
 }
 
 func (s *SineGenerator) Start() {
-	fmt.Println("starting sine generation")
-	fmt.Println("interval:", s.cfg.SampleRate)
+	logger.Info("starting sine generation")
+	logger.Info("interval:", s.cfg.SampleRate)
 }
 
 func (s *SineGenerator) Stop() {
