@@ -51,7 +51,6 @@ func (mc *mqttClient) Connect() {
 }
 
 func (mc *mqttClient) Publish(msg *MqttMsg) {
-	logger.Info("publishing: {topic:", msg.Topic, ", qos:", msg.Qos, ", retain:", msg.Retained, ", payload:", msg.Payload, "}")
 	jsonpayload, err := json.Marshal(msg.Payload)
 	if err != nil {
 		panic(err)

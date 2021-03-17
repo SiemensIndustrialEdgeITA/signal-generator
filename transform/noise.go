@@ -32,6 +32,7 @@ func (n *NoiseTransform) Start() {
 				Ts:  inmsg.Ts,
 				Val: newVal,
 			}
+			logger.Info("transform: msg : { Key:", outmsg.Key, ", Ts:", outmsg.Ts, ", Val:", outmsg.Val, " }")
 			n.Out <- outmsg
 		case <-n.quit:
 			logger.Info("received close")

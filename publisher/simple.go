@@ -17,10 +17,12 @@ type SimpleSink struct {
 	Sink mqttClient
 }
 
+func (s *SimpleSink) Connect() {
+	s.Sink.Connect()
+}
+
 func (s *SimpleSink) Start() {
 	logger.Info("starting simplesink publisher")
-
-	s.Sink.Connect()
 
 	for {
 		select {
@@ -30,6 +32,7 @@ func (s *SimpleSink) Start() {
 				Ts:  inmsg.Ts,
 				Val: inmsg.Val,
 			}
+			logger.Info("publisher: msg : { Key:", outmsg.Key, ", Ts:", outmsg.Ts, ", Val:", outmsg.Val, " }")
 			s.Sink.Publish(&MqttMsg{
 				Topic:    "simple",
 				Qos:      0,

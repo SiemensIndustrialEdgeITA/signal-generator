@@ -10,8 +10,8 @@ import (
 type LinearConfig struct {
 	SampleRate time.Duration
 	Coeff      float64
-	MinVal     int
-	MaxVal     int
+	MinVal     float64
+	MaxVal     float64
 }
 
 type LinearGenerator struct {
@@ -25,17 +25,20 @@ type LinearGenerator struct {
 
 func (l *LinearGenerator) Start() {
 	logger.Info("starting linear generation")
-	logger.Info("interval:", l.cfg.SampleRate.Milliseconds())
 	for {
 		select {
 		case t := <-l.ticker.C:
 			intervalsec := float64(l.cfg.SampleRate.Seconds())
 			l.value = l.value + (l.cfg.Coeff * intervalsec)
+			if l.value > l.cfg.MaxVal {
+				l.value = l.cfg.MinVal
+			}
 			msg := types.DataPoint{
 				Key: "linear",
 				Ts:  t,
 				Val: l.value,
 			}
+			logger.Info("generator: msg : { Key:", msg.Key, ", Ts:", msg.Ts, ", Val:", msg.Val, " }")
 			l.Out <- msg
 		case <-l.quit:
 			logger.Info("received close")

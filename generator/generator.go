@@ -16,15 +16,15 @@ type Generator interface {
 
 type Config interface{}
 
-type gentype int
+type Gentype int
 
 const (
-	LINEAR gentype = iota
+	LINEAR Gentype = iota
 	SINE
 )
 
 // Generator factory
-func NewGenerator(gtype gentype, c Config) (Generator, error) {
+func NewGenerator(gtype Gentype, c Config) (Generator, error) {
 	q := make(chan struct{}) // Unbuffered
 
 	switch gtype {

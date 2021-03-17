@@ -17,14 +17,14 @@ type Transform interface {
 
 type Config interface{}
 
-type transType int
+type TransType int
 
 const (
-	NOISE transType = iota
+	NOISE TransType = iota
 )
 
 // Transform stage factory
-func NewTransform(ttype transType, c Config) (Transform, error) {
+func NewTransform(ttype TransType, c Config) (Transform, error) {
 	q := make(chan struct{}) // Unbuffered
 
 	switch ttype {

@@ -8,11 +8,10 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/SiemensIndustrialEdgeITA/signal-generator/generator"
+	"github.com/SiemensIndustrialEdgeITA/signal-generator/pipeline"
 	"github.com/SiemensIndustrialEdgeITA/signal-generator/publisher"
 	"github.com/SiemensIndustrialEdgeITA/signal-generator/transform"
-	"github.com/SiemensIndustrialEdgeITA/signal-generator/types"
 	homedir "github.com/mitchellh/go-homedir"
-	//	logger "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
@@ -30,12 +29,9 @@ var rootCmd = &cobra.Command{
 		// Configure the data generator
 		gconf := generator.LinearConfig{
 			SampleRate: 1000 * time.Millisecond,
+			Coeff:      0.1,
 			MinVal:     0,
 			MaxVal:     100,
-		}
-		// Instance new data generator
-		gen, err := generator.NewGenerator(generator.LINEAR, gconf)
-		if err != nil {
 		}
 
 		// Configure the noise transform
@@ -45,11 +41,6 @@ var rootCmd = &cobra.Command{
 			MaxVal: 10,
 		}
 
-		// Instance new noise transform
-		tr, err := transform.NewTransform(transform.NOISE, tconf)
-		if err != nil {
-		}
-
 		// Configure the publisher mqtt client
 		pconf := publisher.SimpleConfig{
 			Mqtt: publisher.MqttConfig{
@@ -57,42 +48,27 @@ var rootCmd = &cobra.Command{
 				Port:     1883,
 				User:     "simatic",
 				Password: "simatic",
-				ClientId: "simaticclient",
+				ClientId: "signal-generator",
 			},
 		}
 
-		// Instance new publisher sink
-		pub, err := publisher.NewPublisher(publisher.SIMPLE, pconf)
-		if err != nil {
-		}
+		// Create new data pipeline
+		pip, _ := pipeline.NewPipeline()
+		pip.AddGenerator(generator.LINEAR, gconf)
+		pip.AddTransform(transform.NOISE, tconf)
+		pip.AddPublisher(publisher.SIMPLE, pconf)
+		pip.Build()
 
-		// Create the channels
-		c1 := make(chan types.DataPoint, 1000)
-		c2 := make(chan types.DataPoint, 1000)
+		// Start the pipeline
+		pip.Start()
 
-		// Wire up stages with channnels
-		// gen -> c1 -> tr -> c2 -> pub
-		gen.SetOut(c1)
-		tr.SetIn(c1)
-		tr.SetOut(c2)
-		pub.SetIn(c2)
-
-		// Start publisher
-		go pub.Start()
-
-		// Start noise transform in parallel goroutine
-		go tr.Start()
-
-		// Start data generation in parallel goroutine
-		go gen.Start()
-
-		for {
-			//			msg := <-c1
-			//			logger.Info("generated: { Ts:", msg.Ts, " Key:", msg.Key, " Val:", msg.Val, " }")
-			//			msg = <-c2
-			//			logger.Info("transformed: { Ts:", msg.Ts, " Key:", msg.Key, " Val:", msg.Val, " }")
-			//			msg = <-c2
-			//			logger.Info("published: { Ts:", msg.Ts, " Key:", msg.Key, " Val:", msg.Val, " }")
+		select {
+		//			msg := <-c1
+		//			logger.Info("generated: { Ts:", msg.Ts, " Key:", msg.Key, " Val:", msg.Val, " }")
+		//			msg = <-c2
+		//			logger.Info("transformed: { Ts:", msg.Ts, " Key:", msg.Key, " Val:", msg.Val, " }")
+		//			msg = <-c2
+		//			logger.Info("published: { Ts:", msg.Ts, " Key:", msg.Key, " Val:", msg.Val, " }")
 		}
 	},
 }

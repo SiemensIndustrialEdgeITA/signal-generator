@@ -11,20 +11,21 @@ import (
 type Publisher interface {
 	Start()
 	Stop()
+	Connect()
 	SetIn(chan types.DataPoint)
 	GetIn() chan types.DataPoint
 }
 
 type Config interface{}
 
-type pubType int
+type PubType int
 
 const (
-	SIMPLE pubType = iota
+	SIMPLE PubType = iota
 )
 
 // NewPublisher is Publisher stage factory
-func NewPublisher(ttype pubType, c Config) (Publisher, error) {
+func NewPublisher(ttype PubType, c Config) (Publisher, error) {
 
 	switch ttype {
 	case SIMPLE:
