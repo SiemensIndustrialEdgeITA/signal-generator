@@ -2,7 +2,7 @@ version: "2.4"
 
 services:
     signal-gnerator:
-        build: .
+        image: signal-gnerator
         mem_limit: 200mb
         # Network of system apps
         networks:

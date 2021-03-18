@@ -20,8 +20,7 @@ Output sinks can be selected for the different apps among the following:
 - freqAnalyzer (wip)
 ..
 
-
-## Usage
+## Info
 
 This project is still under construction.
 As a first step a simple connection and streaming of linear data to the broker will be possible as follows:
@@ -34,17 +33,23 @@ As a first step a simple connection and streaming of linear data to the broker w
   value: 0 
 }
 ``
+- broker: **ie-databus:1883**
 - topic:  **/signal-generator/simplejson**  
 - user/password: **simatic/simatic**  
 
+PS: **user, password and topic** must exist on the **databus** in order to properly connect and publish the data 
+
+## Direct usage
 
 Can be launched as follows:
-```
+```bash
 ./signal-generator
 ```
-PS: **user, password and topic** must exist in order to properly connect and publish the data 
-default databus hostname will be ```ie-databus:1883```
 
+## Build the app
 
-
-
+Run:
+```bash
+./build.sh
+```
+Upload docker-compose.yml through the industrial-edge-publisher
