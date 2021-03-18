@@ -53,3 +53,12 @@ Run:
 ./build.sh
 ```
 Upload docker-compose.yml through the industrial-edge-publisher
+
+
+## Precompiled
+
+Find precompiled version of the app under 
+```bash
+./app
+```
+This can be directly imported inside your Industrial Edge Management
