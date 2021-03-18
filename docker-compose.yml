@@ -1,0 +1,14 @@
+version: "2.4"
+
+services:
+    signal-gnerator:
+        build: .
+        mem_limit: 200mb
+        # Network of system apps
+        networks:
+            - proxy-redirect
+
+networks:
+    proxy-redirect:
+        external:
+            name: proxy-redirect 
