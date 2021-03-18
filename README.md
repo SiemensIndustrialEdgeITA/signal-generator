@@ -24,7 +24,7 @@ Output sinks can be selected for the different apps among the following:
 ## Usage
 
 This project is still under construction.
-As a first step a simple connection and streaming of constant data to the broker will be possible as follows:
+As a first step a simple connection and streaming of linear data to the broker will be possible as follows:
 
 - 1 datapoint/sec
 - simpleJson schema:
@@ -43,7 +43,7 @@ Can be launched as follows:
 ./signal-generator
 ```
 PS: **user, password and topic** must exist in order to properly connect and publish the data 
-default databus hostname will be ```ie-databus:1883
+default databus hostname will be ```ie-databus:1883```
 
 
 
