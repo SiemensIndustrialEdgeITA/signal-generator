@@ -44,7 +44,7 @@ var rootCmd = &cobra.Command{
 		// Configure the publisher mqtt client
 		pconf := publisher.SimpleConfig{
 			Mqtt: publisher.MqttConfig{
-				Host:     "127.0.0.1",
+				Host:     "ie-databus",
 				Port:     1883,
 				User:     "simatic",
 				Password: "simatic",
