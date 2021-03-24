@@ -32,8 +32,12 @@ func (n *NoiseTransform) Start() {
 				Ts:  inmsg.Ts,
 				Val: newVal,
 			}
-			logger.Info("transform: msg : { Key:", outmsg.Key, ", Ts:", outmsg.Ts, ", Val:", outmsg.Val, " }")
-			n.Out <- outmsg
+			if len(n.Out) < (cap(n.Out) - 1) {
+				n.Out <- outmsg
+				logger.Info("transform: msg : { Key:", outmsg.Key, ", Ts:", outmsg.Ts, ", Val:", outmsg.Val, " }")
+			} else {
+				logger.Error("transform: out: max capacity exceeded: cap:", cap(n.Out), " len:", len(n.Out))
+			}
 		case <-n.quit:
 			logger.Info("received close")
 			return

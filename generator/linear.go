@@ -38,8 +38,12 @@ func (l *LinearGenerator) Start() {
 				Ts:  t,
 				Val: l.value,
 			}
-			logger.Info("generator: msg : { Key:", msg.Key, ", Ts:", msg.Ts, ", Val:", msg.Val, " }")
-			l.Out <- msg
+			if len(l.Out) < (cap(l.Out) - 1) {
+				l.Out <- msg
+				logger.Info("generator: msg : { Key:", msg.Key, ", Ts:", msg.Ts, ", Val:", msg.Val, " }")
+			} else {
+				logger.Error("generator: out: max capacity exceeded: cap:", cap(l.Out), " len:", len(l.Out))
+			}
 		case <-l.quit:
 			logger.Info("received close")
 			l.ticker.Stop()

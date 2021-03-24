@@ -53,16 +53,12 @@ func (mc *mqttClient) Connect() {
 func (mc *mqttClient) Publish(msg *MqttMsg) {
 	jsonpayload, err := json.Marshal(msg.Payload)
 	if err != nil {
-		panic(err)
+		logger.Error("Could not publish message: err:", err)
 	}
 
 	token := mc.client.Publish(msg.Topic, msg.Qos, msg.Retained, jsonpayload)
 	token.Wait()
 }
-
-//var messagePubHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Message) {
-//	fmt.Printf("Received message: %s from topic: %s\n", msg.Payload(), msg.Topic())
-//}
 
 var connectHandler mqtt.OnConnectHandler = func(client mqtt.Client) {
 	logger.Info("Connected")
