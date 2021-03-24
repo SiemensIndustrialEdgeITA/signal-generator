@@ -44,7 +44,7 @@ var rootCmd = &cobra.Command{
 		// Configure the publisher mqtt client
 		pconf := publisher.SimpleConfig{
 			Mqtt: publisher.MqttConfig{
-				Host:     "127.0.0.1",
+				Host:     "ie-databus",
 				Port:     1883,
 				User:     "simatic",
 				Password: "simatic",
@@ -62,14 +62,9 @@ var rootCmd = &cobra.Command{
 		// Start the pipeline
 		pip.Start()
 
-		select {
-		//			msg := <-c1
-		//			logger.Info("generated: { Ts:", msg.Ts, " Key:", msg.Key, " Val:", msg.Val, " }")
-		//			msg = <-c2
-		//			logger.Info("transformed: { Ts:", msg.Ts, " Key:", msg.Key, " Val:", msg.Val, " }")
-		//			msg = <-c2
-		//			logger.Info("published: { Ts:", msg.Ts, " Key:", msg.Key, " Val:", msg.Val, " }")
-		}
+		// Runforever
+		select {}
+
 	},
 }
 
@@ -88,6 +83,7 @@ func init() {
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.signal-generator.yaml)")
 
+	// Enable me to pass cli options
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	//	rootCmd.Flags().StringP("user", "u", "simatic", "databus username")

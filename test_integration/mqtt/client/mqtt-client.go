@@ -51,7 +51,7 @@ func publish(client mqtt.Client) {
 }
 
 func sub(client mqtt.Client) {
-	topic := "simple"
+	topic := "signal-generator/simplejson"
 	token := client.Subscribe(topic, 0, nil)
 	token.Wait()
 	fmt.Println("Subscribed to topic:", topic)

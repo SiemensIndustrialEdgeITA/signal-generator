@@ -34,7 +34,7 @@ func (s *SimpleSink) Start() {
 			}
 			logger.Info("publisher: msg : { Key:", outmsg.Key, ", Ts:", outmsg.Ts, ", Val:", outmsg.Val, " }")
 			s.Sink.Publish(&MqttMsg{
-				Topic:    "simple",
+				Topic:    "signal-generator/simplejson",
 				Qos:      0,
 				Retained: false,
 				Payload:  outmsg,
