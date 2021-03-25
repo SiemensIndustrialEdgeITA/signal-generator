@@ -3,6 +3,7 @@ module github.com/SiemensIndustrialEdgeITA/signal-generator
 go 1.16
 
 require (
+	github.com/devilsray/golang-viper-config-example v0.0.0-20170611133002-f6dfecb74eef // indirect
 	github.com/eclipse/paho.mqtt.golang v1.3.2
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/sirupsen/logrus v1.2.0
