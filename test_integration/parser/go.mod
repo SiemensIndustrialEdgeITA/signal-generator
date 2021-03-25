@@ -1,4 +1,4 @@
-module viper-example
+module parser
 
 go 1.16
 

@@ -17,43 +17,48 @@ pipelines:
             coeff: 0.1
             min: 0
             max: 100
-#      transforms:
-#        - type: none
-#          config:
-#        - type: noise
-#          config:
-#            coeff: 0
-#            min: 0
-#            max: 10
-#      sinks:
-#        - type: simple
-#        - type: dataservice
+      transforms:
+        - type: none
+          config:
+        - type: noise
+          config:
+            coeff: 0
+            min: 0
+            max: 10
+      sinks:
+        - type: simple
+        - type: dataservice
 `
 
 func main() {
-	//	m := make(map[interface{}]interface{})
-	d := PipeConfig{}
 
+	m := make(map[interface{}]interface{})
+
+	err := yaml.Unmarshal([]byte(data), &m)
 	//	err := yaml.Unmarshal([]byte(data), &m)
-	err := yaml.Unmarshal([]byte(data), &d)
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
 
-	//	fmt.Printf("%v\n", m)
-	fmt.Printf("name: %s\n", d.Pipelines[0].Name)
-	fmt.Printf("type: %s\n", d.Pipelines[0].Generator.Type)
-	fmt.Printf("%v\n", d.Pipelines[0].Generator.RawConf)
+	// Decode configuration
+	d := PipeConfig{}
+	mapstructure.Decode(m, &d)
+	fmt.Printf("configuration %v\n", d)
 
-	genconfig := GenConfig{}
-	mapstructure.Decode(d.Pipelines[0].Generator.RawConf, &genconfig)
+	// Decode pipe array
+	for _, pipemap := range d.Pipelines {
+		p := Pipe{}
+		mapstructure.Decode(pipemap, &p)
+		fmt.Printf("pipe %v\n", p)
 
-	fmt.Printf("genconfig: %v\n", genconfig)
+		// Decode generator
+		g := StageConfig{}
+		mapstructure.Decode(p.Generator, &g)
+		fmt.Printf("generator %v\n", g)
 
+		// Decode generator config
+		gc := GenConfig{}
+		mapstructure.Decode(g.RawConf, &gc)
+		fmt.Printf("generator config %v\n", gc)
+	}
 }
-
-//func ParseGenerator(genmap map[string]interface{}) GenConfig {
-//	result := GenConfig{}
-//	mapstructure.Decode(genmap, &result)
-//	return result
-//}

@@ -1,28 +1,22 @@
 package main
 
 type PipeConfig struct {
-	Pipelines []Pipe `yaml:"pipelines"`
+	Pipelines []Pipe `mapstructure:"pipelines"`
 }
 
 type Pipe struct {
-	Name      string      `yaml:"name"`
-	Generator StageConfig `yaml:"generator"`
+	Name      string      `mapstructure:"name"`
+	Generator StageConfig `mapstructure:"generator"`
 }
 
 type StageConfig struct {
-	Type    string      `yaml:"type"`
-	RawConf interface{} `yaml:"config"`
+	Type    string      `mapstructure:"type"`
+	RawConf interface{} `mapstructure:"config"`
 }
 
 type GenConfig struct {
-	Rate_ms int `mapstructure:"rate_ms"`
-	Min     int `mapstructure:"min"`
-	Max     int `mapstructure:"max"`
+	Rate_ms int     `mapstructure:"rate_ms"`
+	Coeff   float64 `mapstructure:"coeff"`
+	Min     int     `mapstructure:"min"`
+	Max     int     `mapstructure:"max"`
 }
-
-//type GenConfig struct {
-//	Rate_ms int     `mapstructure:"rate_ms"`
-//	Coeff   float64 `mapstructure:"coeff"`
-//	Min     int     `mapstructure:"min"`
-//	Max     int     `mapstructure:"max"`
-//}
