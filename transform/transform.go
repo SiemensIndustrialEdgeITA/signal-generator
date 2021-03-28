@@ -15,19 +15,11 @@ type Transform interface {
 	GetOut() chan types.DataPoint
 }
 
-// Transform stage factory
-func NewTransform(ttype TransType, c Config) (Transform, error) {
-	q := make(chan struct{}) // Unbuffered
-
-	switch ttype {
-	case NOISE:
-		var nc NoiseConfig = c.(NoiseConfig) // Assert config interface to Type
-		return &NoiseTransform{
-			cfg:   nc,
-			value: 0,
-			quit:  q,
-		}, nil
-
+func NewNoiseTrans(ntc NoiseConfig) *NoiseTransform {
+	q := make(chan struct{}) // Unbuffered quit channel
+	return &NoiseTransform{
+		cfg:   ntc,
+		value: 0,
+		quit:  q,
 	}
-	return nil, fmt.Errorf("could not create transform type: %d", ttype)
 }

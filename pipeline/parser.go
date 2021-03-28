@@ -2,7 +2,9 @@ package pipeline
 
 import (
 	"fmt"
+
 	"github.com/SiemensIndustrialEdgeITA/signal-generator/generator"
+	"github.com/SiemensIndustrialEdgeITA/signal-generator/transform"
 	"github.com/mitchellh/mapstructure"
 	//	logger "github.com/sirupsen/logrus"
 )
@@ -51,6 +53,16 @@ func ParseSineGenCfg(cfg interface{}) (*generator.SineConfig, error) {
 		return nil, fmt.Errorf("parselingen: could not decode sine generator config: %s", err)
 	}
 	return &sgc, nil
+}
+
+// ParseNoiseTransCfg parse the noise transformation configuration
+func ParseNoiseTransCfg(cfg interface{}) (*transform.NoiseConfig, error) {
+	ntc := transform.NoiseTransform{}
+	err := mapstructure.Decode(cfg, &ntc)
+	if err != nil {
+		return nil, fmt.Errorf("parsenoisetrans: could not decode noise transform config: %s", err)
+	}
+	return &ntc, nil
 }
 
 //// ParseTransCfg parse the transform configuration

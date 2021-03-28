@@ -34,15 +34,15 @@ func NewPipeline(pcfg PipeConfig) Pipeline {
 	}
 }
 
-// BuildGenerator builds the specific generator type
-func (ppl *Pipeline) BuildGenFromMap(gencfg StageCfgMap) (generator.Generator, error) {
+// BuildGenFromMap builds the specific generator type
+func (ppl *Pipeline) BuildGenFromMap(gencfgmap StageCfgMap) (generator.Generator, error) {
 
 	var gen generator.Generator
 
-	switch gencfg.Type {
+	switch gencfgmap.Type {
 	case "linear":
 		{
-			gencfg, err := ParseLinGenCfg(gencfg.RawConf)
+			gencfg, err := ParseLinGenCfg(gencfgmap.RawConf)
 			if err != nil {
 				return nil, fmt.Errorf("build generator: %s", err)
 			}
@@ -50,11 +50,34 @@ func (ppl *Pipeline) BuildGenFromMap(gencfg StageCfgMap) (generator.Generator, e
 		}
 	default:
 		{
-			return nil, fmt.Errorf("build generator: could not find type %s", gencfg.Type)
+			return nil, fmt.Errorf("build generator: could not find type %s", gencfgmap.Type)
 		}
 	}
 
 	return gen, nil
+}
+
+// BuildTransFromMap builds the specific transform type
+func (ppl *Pipeline) BuildTransFromMap(transcfgmap StageCfgMap) (transform.Transform, error) {
+
+	var trans transform.Transform
+
+	switch transcfgmap.Type {
+	case "noise":
+		{
+			transcfg, err := ParseNoiseTransCfg(transcfgmap.RawConf)
+			if err != nil {
+				return nil, fmt.Errorf("build generator: %s", err)
+			}
+			trans = transform.NewNoiseTrans(*transcfg)
+		}
+	default:
+		{
+			return nil, fmt.Errorf("build transform: could not find type %s", transcfgmap.Type)
+		}
+	}
+
+	return trans, nil
 }
 
 func (ppl *Pipeline) AddGenerator(gen generator.Generator) {

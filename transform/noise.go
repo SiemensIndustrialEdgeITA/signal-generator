@@ -8,9 +8,9 @@ import (
 )
 
 type NoiseConfig struct {
-	Coeff  float64
-	MinVal float64
-	MaxVal float64
+	Coeff  float64 `mapstructure:"coeff"`
+	MinVal float64 `mapstructure:"min"`
+	MaxVal float64 `mapstructure:"max"`
 }
 
 type NoiseTransform struct {

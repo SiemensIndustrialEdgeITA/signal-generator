@@ -31,6 +31,14 @@ func NewPipeArray(cfgmap interface{}) (*PipesArray, error) {
 		}
 		pipe.AddGenerator(gen)
 
+		// Build and assign the transform
+		trans, err := pipe.BuildTransFromMap(pipecfg.GenCfgMap)
+		if err != nil {
+			logger.Error("pipeline %s: %s", pipe.cfg.Name, err)
+			os.Exit(1)
+		}
+		pipe.AddTransform(trans)
+
 		// Connect the stages
 		pipe.Connect()
 
