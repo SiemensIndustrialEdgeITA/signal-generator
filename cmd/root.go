@@ -1,14 +1,12 @@
 package cmd
 
 import (
-	"fmt"
-	"time"
+	"io/ioutil"
+	"os"
 
+	"github.com/SiemensIndustrialEdgeITA/signal-generator/pipeline"
 	"github.com/spf13/cobra"
-	//	"github.com/SiemensIndustrialEdgeITA/signal-generator/generator"
-	//	"github.com/SiemensIndustrialEdgeITA/signal-generator/pipeline"
-	//	"github.com/SiemensIndustrialEdgeITA/signal-generator/publisher"
-	//	"github.com/SiemensIndustrialEdgeITA/signal-generator/transform"
+	"gopkg.in/yaml.v2"
 )
 
 var cfgFile string
@@ -18,47 +16,31 @@ var rootCmd = &cobra.Command{
 	Use:   "signal-generator",
 	Short: `generate data stream for local testing`,
 	Long:  "simple lighweight Simatic Edge App written in go which generates customizable streams of data suitable for local testing",
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
+	// Run the command
 	Run: func(cmd *cobra.Command, args []string) {
 
-		fmt.Println("config:", cfgFile)
+		// Open and read file
+		yamlFile, err := ioutil.ReadFile(cfgFile)
 
-		//		// Configure the data generator
-		//		gconf := generator.LinearConfig{
-		//			SampleRate: 1000 * time.Millisecond,
-		//			Coeff:      0.1,
-		//			MinVal:     0,
-		//			MaxVal:     100,
-		//		}
-		//
-		//		// Configure the noise transform
-		//		tconf := transform.NoiseConfig{
-		//			Coeff:  0,
-		//			MinVal: -10,
-		//			MaxVal: 10,
-		//		}
-		//
-		//		// Configure the publisher mqtt client
-		//		pconf := publisher.SimpleConfig{
-		//			Mqtt: publisher.MqttConfig{
-		//				Host:     "ie-databus",
-		//				Port:     1883,
-		//				User:     "simatic",
-		//				Password: "simatic",
-		//				ClientId: "signal-generator",
-		//			},
-		//		}
-		//
-		//		// Create new data pipeline
-		//		pip, _ := pipeline.NewPipeline()
-		//		pip.AddGenerator(generator.LINEAR, gconf)
-		//		pip.AddTransform(transform.NOISE, tconf)
-		//		pip.AddPublisher(publisher.SIMPLE, pconf)
-		//		pip.Build()
-		//
-		//		// Start the pipeline
-		//		pip.Start()
+		if err != nil {
+			os.Exit(1)
+		}
+
+		// Unmarshal yaml to map object
+		cfgmap := make(map[interface{}]interface{})
+		err = yaml.Unmarshal(yamlFile, &cfgmap)
+		if err != nil {
+			os.Exit(1)
+		}
+
+		// Create pipes
+		pipe, err := pipeline.NewPipeArray(cfgmap)
+		if err != nil {
+			os.Exit(1)
+		}
+
+		// Run all the pipes in parallel
+		pipe.Start()
 
 		// Runforever
 		select {}

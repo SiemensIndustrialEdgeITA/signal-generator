@@ -84,6 +84,13 @@ func (ppl *Pipeline) BuildTransFromMap(transcfgmap StageCfgMap) (transform.Trans
 func (ppl *Pipeline) BuildPubFromMap(pubcfgmap StageCfgMap) (publisher.Publisher, error) {
 
 	var pub publisher.Publisher
+	mqttcfg := publisher.MqttConfig{
+		Host:     "ie-databus",
+		Port:     1883,
+		User:     "simatic",
+		Password: "simatic",
+		ClientId: "signal-generator",
+	}
 
 	switch pubcfgmap.Type {
 	case "simple":
@@ -92,6 +99,7 @@ func (ppl *Pipeline) BuildPubFromMap(pubcfgmap StageCfgMap) (publisher.Publisher
 			if err != nil {
 				return nil, fmt.Errorf("build generator: %s", err)
 			}
+			pubcfg.Mqtt = mqttcfg
 			pub = publisher.NewSimplePublisher(*pubcfg)
 		}
 	default:
