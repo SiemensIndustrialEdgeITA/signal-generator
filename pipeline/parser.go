@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/SiemensIndustrialEdgeITA/signal-generator/generator"
+	"github.com/SiemensIndustrialEdgeITA/signal-generator/publisher"
 	"github.com/SiemensIndustrialEdgeITA/signal-generator/transform"
 	"github.com/mitchellh/mapstructure"
 	//	logger "github.com/sirupsen/logrus"
@@ -61,6 +62,16 @@ func ParseNoiseTransCfg(cfg interface{}) (*transform.NoiseConfig, error) {
 	err := mapstructure.Decode(cfg, &ntc)
 	if err != nil {
 		return nil, fmt.Errorf("parsenoisetrans: could not decode noise transform config: %s", err)
+	}
+	return &ntc, nil
+}
+
+// ParseSimplePubCfg parse the simple publisher configuration
+func ParseSimplePubCfg(cfg interface{}) (*publisher.SimpleConfig, error) {
+	spc := publisher.SimpleConfig{}
+	err := mapstructure.Decode(cfg, &spc)
+	if err != nil {
+		return nil, fmt.Errorf("parsesimplepub: could not decode simple publisher config: %s", err)
 	}
 	return &ntc, nil
 }

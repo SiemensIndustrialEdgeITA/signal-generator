@@ -80,6 +80,29 @@ func (ppl *Pipeline) BuildTransFromMap(transcfgmap StageCfgMap) (transform.Trans
 	return trans, nil
 }
 
+// BuildPubFromMap builds the specific publisher type
+func (ppl *Pipeline) BuildPubFromMap(pubcfgmap StageCfgMap) (publisher.Publisher, error) {
+
+	var pub publisher.Publisher
+
+	switch pubcfgmap.Type {
+	case "simple":
+		{
+			pubcfg, err := ParseSimplePubCfg(pubcfgmap.RawConf)
+			if err != nil {
+				return nil, fmt.Errorf("build generator: %s", err)
+			}
+			pub = publisher.NewSimplePublisher(*pubcfg)
+		}
+	default:
+		{
+			return nil, fmt.Errorf("build publisher: could not find type %s", pubcfgmap.Type)
+		}
+	}
+
+	return pub, nil
+}
+
 func (ppl *Pipeline) AddGenerator(gen generator.Generator) {
 	ppl.Gen = gen
 }
@@ -107,7 +130,7 @@ func (ppl *Pipeline) Connect() {
 func (ppl *Pipeline) Start() {
 	logger.Info("starting pipeline")
 
-	// Start publisher
+	// Start publisher in parallel goroutine
 	go ppl.Pub.Start()
 
 	// Start noise transform in parallel goroutine

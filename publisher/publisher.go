@@ -1,10 +1,7 @@
 package publisher
 
 import (
-	"fmt"
-
 	"github.com/SiemensIndustrialEdgeITA/signal-generator/types"
-	//	logger "github.com/sirupsen/logrus"
 )
 
 // Publisher streams data to the outside world
@@ -16,28 +13,13 @@ type Publisher interface {
 	GetIn() chan types.DataPoint
 }
 
-type Config interface{}
+func NewSimplePublisher(spc SimpleConfig) *SimpleSink {
 
-type PubType int
+	// Create mqtt client
+	mclient := newMqttClient(spc.Mqtt)
 
-const (
-	SIMPLE PubType = iota
-)
-
-// NewPublisher is Publisher stage factory
-func NewPublisher(ttype PubType, c Config) (Publisher, error) {
-
-	switch ttype {
-	case SIMPLE:
-		var sc SimpleConfig = c.(SimpleConfig) // Assert config interface to Type
-
-		// Create mqtt client
-		mclient := newMqttClient(sc.Mqtt)
-
-		return &SimpleSink{
-			cfg:  sc,
-			Sink: mclient, // Inject the mqtt client
-		}, nil
+	return &SimpleSink{
+		cfg:  spc,
+		Sink: mclient, // Inject the mqtt client
 	}
-	return nil, fmt.Errorf("could not create publisher with type: %d", ttype)
 }
