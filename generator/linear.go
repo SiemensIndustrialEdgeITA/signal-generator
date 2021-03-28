@@ -8,10 +8,10 @@ import (
 )
 
 type LinearConfig struct {
-	SampleRate time.Duration
-	Coeff      float64
-	MinVal     float64
-	MaxVal     float64
+	SampleRate time.Duration `mapstructure:"rate_ms"`
+	Coeff      float64       `mapstructure:"coeff"`
+	MinVal     float64       `mapstructure:"min"`
+	MaxVal     float64       `mapstructure:"max"`
 }
 
 type LinearGenerator struct {

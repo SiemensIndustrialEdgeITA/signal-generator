@@ -15,14 +15,6 @@ type Transform interface {
 	GetOut() chan types.DataPoint
 }
 
-type Config interface{}
-
-type TransType int
-
-const (
-	NOISE TransType = iota
-)
-
 // Transform stage factory
 func NewTransform(ttype TransType, c Config) (Transform, error) {
 	q := make(chan struct{}) // Unbuffered

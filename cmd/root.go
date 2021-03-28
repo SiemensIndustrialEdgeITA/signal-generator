@@ -5,11 +5,10 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
-
-	"github.com/SiemensIndustrialEdgeITA/signal-generator/generator"
-	"github.com/SiemensIndustrialEdgeITA/signal-generator/pipeline"
-	"github.com/SiemensIndustrialEdgeITA/signal-generator/publisher"
-	"github.com/SiemensIndustrialEdgeITA/signal-generator/transform"
+	//	"github.com/SiemensIndustrialEdgeITA/signal-generator/generator"
+	//	"github.com/SiemensIndustrialEdgeITA/signal-generator/pipeline"
+	//	"github.com/SiemensIndustrialEdgeITA/signal-generator/publisher"
+	//	"github.com/SiemensIndustrialEdgeITA/signal-generator/transform"
 )
 
 var cfgFile string
@@ -25,41 +24,41 @@ var rootCmd = &cobra.Command{
 
 		fmt.Println("config:", cfgFile)
 
-		// Configure the data generator
-		gconf := generator.LinearConfig{
-			SampleRate: 1000 * time.Millisecond,
-			Coeff:      0.1,
-			MinVal:     0,
-			MaxVal:     100,
-		}
-
-		// Configure the noise transform
-		tconf := transform.NoiseConfig{
-			Coeff:  0,
-			MinVal: -10,
-			MaxVal: 10,
-		}
-
-		// Configure the publisher mqtt client
-		pconf := publisher.SimpleConfig{
-			Mqtt: publisher.MqttConfig{
-				Host:     "ie-databus",
-				Port:     1883,
-				User:     "simatic",
-				Password: "simatic",
-				ClientId: "signal-generator",
-			},
-		}
-
-		// Create new data pipeline
-		pip, _ := pipeline.NewPipeline()
-		pip.AddGenerator(generator.LINEAR, gconf)
-		pip.AddTransform(transform.NOISE, tconf)
-		pip.AddPublisher(publisher.SIMPLE, pconf)
-		pip.Build()
-
-		// Start the pipeline
-		pip.Start()
+		//		// Configure the data generator
+		//		gconf := generator.LinearConfig{
+		//			SampleRate: 1000 * time.Millisecond,
+		//			Coeff:      0.1,
+		//			MinVal:     0,
+		//			MaxVal:     100,
+		//		}
+		//
+		//		// Configure the noise transform
+		//		tconf := transform.NoiseConfig{
+		//			Coeff:  0,
+		//			MinVal: -10,
+		//			MaxVal: 10,
+		//		}
+		//
+		//		// Configure the publisher mqtt client
+		//		pconf := publisher.SimpleConfig{
+		//			Mqtt: publisher.MqttConfig{
+		//				Host:     "ie-databus",
+		//				Port:     1883,
+		//				User:     "simatic",
+		//				Password: "simatic",
+		//				ClientId: "signal-generator",
+		//			},
+		//		}
+		//
+		//		// Create new data pipeline
+		//		pip, _ := pipeline.NewPipeline()
+		//		pip.AddGenerator(generator.LINEAR, gconf)
+		//		pip.AddTransform(transform.NOISE, tconf)
+		//		pip.AddPublisher(publisher.SIMPLE, pconf)
+		//		pip.Build()
+		//
+		//		// Start the pipeline
+		//		pip.Start()
 
 		// Runforever
 		select {}

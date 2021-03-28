@@ -1,7 +1,6 @@
 package generator
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/SiemensIndustrialEdgeITA/signal-generator/types"
@@ -14,39 +13,24 @@ type Generator interface {
 	GetOut() chan types.DataPoint
 }
 
-type Config interface{}
-
-type Gentype int
-
-const (
-	LINEAR Gentype = iota
-	SINE
-)
-
-// Generator factory
-func NewGenerator(gtype Gentype, c Config) (Generator, error) {
-	q := make(chan struct{}) // Unbuffered
-
-	switch gtype {
-	case LINEAR:
-		var lc LinearConfig = c.(LinearConfig) // Assert config interface to Type
-		t := time.NewTicker(lc.SampleRate)
-		return &LinearGenerator{
-			cfg:    lc,
-			value:  0,
-			ticker: t,
-			quit:   q,
-		}, nil
-	case SINE:
-		var sc SineConfig = c.(SineConfig) // Assert config interface to Type
-		t := time.NewTicker(sc.SampleRate)
-		return &SineGenerator{
-			cfg:    sc,
-			value:  0,
-			ticker: t,
-			quit:   q,
-		}, nil
-
+func NewLinearGen(lgc LinearConfig) *LinearGenerator {
+	q := make(chan struct{}) // Unbuffered quit channel
+	t := time.NewTicker(lgc.SampleRate)
+	return &LinearGenerator{
+		cfg:    lgc,
+		value:  0,
+		ticker: t,
+		quit:   q,
 	}
-	return nil, fmt.Errorf("could not create generator type: %d", gtype)
+}
+
+func NewSineGen(sgc SineConfig) *SineGenerator {
+	q := make(chan struct{}) // Unbuffered quit channel
+	t := time.NewTicker(sgc.SampleRate)
+	return &SineGenerator{
+		cfg:    sgc,
+		value:  0,
+		ticker: t,
+		quit:   q,
+	}
 }

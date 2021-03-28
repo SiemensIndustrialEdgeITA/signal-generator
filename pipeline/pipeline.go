@@ -7,19 +7,15 @@ import (
 	"github.com/SiemensIndustrialEdgeITA/signal-generator/publisher"
 	"github.com/SiemensIndustrialEdgeITA/signal-generator/transform"
 	"github.com/SiemensIndustrialEdgeITA/signal-generator/types"
-	//	logger "github.com/sirupsen/logrus"
+	logger "github.com/sirupsen/logrus"
 )
 
-type Pipe interface {
-	Start()
-	Stop()
-	Build()
-	AddGenerator(generator.Config) error
-	AddTransform(transform.Config) error
-	AddPublisher(publisher.Config) error
+type PipeConfig struct {
+	Name string
 }
 
 type Pipeline struct {
+	cfg      PipeConfig
 	Gen      generator.Generator
 	Trans    transform.Transform
 	Pub      publisher.Publisher
@@ -27,57 +23,54 @@ type Pipeline struct {
 	TransOut chan types.DataPoint
 }
 
-func NewPipeline() (*Pipeline, error) {
+func NewPipeline(pcfg PipeConfig) Pipeline {
 	gout := make(chan types.DataPoint, 100) // Buffered
 	tout := make(chan types.DataPoint, 100) // Buffered
 
-	return &Pipeline{
+	return Pipeline{
+		cfg:      pcfg,
 		GenOut:   gout,
 		TransOut: tout,
-	}, nil
-
+	}
 }
 
-func (ppl *Pipeline) AddGenerator(gtype generator.Gentype, gconf generator.Config) error {
+// BuildGenerator builds the specific generator type
+func (ppl *Pipeline) BuildGenFromMap(gencfg StageCfgMap) (generator.Generator, error) {
 
-	// Instance new data generator
-	gen, err := generator.NewGenerator(gtype, gconf)
-	if err != nil {
-		return fmt.Errorf("could not add the generator")
+	var gen generator.Generator
+
+	switch gencfg.Type {
+	case "linear":
+		{
+			gencfg, err := ParseLinGenCfg(gencfg.RawConf)
+			if err != nil {
+				return nil, fmt.Errorf("build generator: %s", err)
+			}
+			gen = generator.NewLinearGen(*gencfg)
+		}
+	default:
+		{
+			return nil, fmt.Errorf("build generator: could not find type %s", gencfg.Type)
+		}
 	}
 
+	return gen, nil
+}
+
+func (ppl *Pipeline) AddGenerator(gen generator.Generator) {
 	ppl.Gen = gen
-
-	return nil
 }
 
-func (ppl *Pipeline) AddTransform(ttype transform.TransType, tconf transform.Config) error {
-
-	// Instance new data transform
-	trns, err := transform.NewTransform(ttype, tconf)
-	if err != nil {
-		return fmt.Errorf("could not add the transform")
-	}
-
-	ppl.Trans = trns
-
-	return nil
+func (ppl *Pipeline) AddTransform(trans transform.Transform) {
+	ppl.Gen = trans
 }
 
-func (ppl *Pipeline) AddPublisher(ptype publisher.PubType, pconf publisher.Config) error {
-
-	// Instance new publisher
-	pub, err := publisher.NewPublisher(ptype, pconf)
-	if err != nil {
-		return fmt.Errorf("could not add publisher")
-	}
-
+func (ppl *Pipeline) AddPublisher(pub publisher.Publisher) {
 	ppl.Pub = pub
-
-	return nil
 }
 
-func (ppl *Pipeline) Build() {
+// Connect connects the whole pipeline stages
+func (ppl *Pipeline) Connect() {
 
 	// Wire up stages with channnels
 	// gen -> c1 -> tr -> c2 -> pub
@@ -89,7 +82,7 @@ func (ppl *Pipeline) Build() {
 }
 
 func (ppl *Pipeline) Start() {
-	fmt.Println("starting pipeline")
+	logger.Info("starting pipeline")
 
 	// Start publisher
 	go ppl.Pub.Start()
