@@ -8,10 +8,10 @@ import (
 )
 
 type LinearConfig struct {
-	SampleRate time.Duration `mapstructure:"rate_ms"`
-	Coeff      float64       `mapstructure:"coeff"`
-	MinVal     float64       `mapstructure:"min"`
-	MaxVal     float64       `mapstructure:"max"`
+	SampleRate int     `mapstructure:"rate_ms"`
+	Coeff      float64 `mapstructure:"coeff"`
+	MinVal     float64 `mapstructure:"min"`
+	MaxVal     float64 `mapstructure:"max"`
 }
 
 type LinearGenerator struct {
@@ -27,7 +27,7 @@ func (l *LinearGenerator) Start() {
 	for {
 		select {
 		case t := <-l.ticker.C:
-			intervalsec := float64(l.cfg.SampleRate.Seconds())
+			intervalsec := float64(time.Duration(l.cfg.SampleRate) * time.Millisecond)
 			l.value = l.value + (l.cfg.Coeff * intervalsec)
 			if l.value > l.cfg.MaxVal {
 				l.value = l.cfg.MinVal

@@ -15,7 +15,7 @@ type Generator interface {
 
 func NewLinearGen(lgc LinearConfig) *LinearGenerator {
 	q := make(chan struct{}) // Unbuffered quit channel
-	t := time.NewTicker(lgc.SampleRate)
+	t := time.NewTicker(time.Duration(lgc.SampleRate) * time.Millisecond)
 	return &LinearGenerator{
 		cfg:    lgc,
 		value:  0,
@@ -26,7 +26,7 @@ func NewLinearGen(lgc LinearConfig) *LinearGenerator {
 
 func NewSineGen(sgc SineConfig) *SineGenerator {
 	q := make(chan struct{}) // Unbuffered quit channel
-	t := time.NewTicker(sgc.SampleRate)
+	t := time.NewTicker(time.Duration(sgc.SampleRate) * time.Millisecond)
 	return &SineGenerator{
 		cfg:    sgc,
 		value:  0,
