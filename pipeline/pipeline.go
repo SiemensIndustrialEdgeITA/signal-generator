@@ -116,7 +116,7 @@ func (ppl *Pipeline) AddGenerator(gen *generator.Generator) {
 }
 
 func (ppl *Pipeline) AddTransform(trans *transform.Transform) {
-	ppl.Gen = *trans
+	ppl.Trans = *trans
 }
 
 func (ppl *Pipeline) AddPublisher(pub *publisher.Publisher) {
@@ -129,8 +129,8 @@ func (ppl *Pipeline) Connect() {
 	// Wire up stages with channnels
 	// gen -> c1 -> tr -> c2 -> pub
 	ppl.Gen.SetOut(ppl.GenOut)
-	ppl.Trans.SetIn(ppl.GenOut)
-	ppl.Trans.SetOut(ppl.TransOut)
+	//	ppl.Trans.SetIn(ppl.GenOut)
+	//	ppl.Trans.SetOut(ppl.TransOut)
 	ppl.Pub.SetIn(ppl.TransOut)
 	ppl.Pub.Connect()
 }
