@@ -7,7 +7,7 @@ import (
 	"github.com/SiemensIndustrialEdgeITA/signal-generator/publisher"
 	"github.com/SiemensIndustrialEdgeITA/signal-generator/transform"
 	"github.com/mitchellh/mapstructure"
-	//	logger "github.com/sirupsen/logrus"
+	logger "github.com/sirupsen/logrus"
 )
 
 type CfgMap struct {
@@ -33,6 +33,9 @@ func ParseConfig(cfg interface{}) (*CfgMap, error) {
 	if err != nil {
 		return nil, fmt.Errorf("could not decode toplevel config: %s", err)
 	}
+
+	logger.Info("parsed pipe array config:", c)
+
 	return c, nil
 }
 
@@ -43,16 +46,22 @@ func ParseLinGenCfg(cfg interface{}) (*generator.LinearConfig, error) {
 	if err != nil {
 		return nil, fmt.Errorf("parselingen: could not decode linear generator config: %s", err)
 	}
+
+	logger.Info("parsed linear generator config:", lgc)
+
 	return &lgc, nil
 }
 
-// ParseLinGenCfg parse the linear generator configuration
+// ParseLinGenCfg parse the sine generator configuration
 func ParseSineGenCfg(cfg interface{}) (*generator.SineConfig, error) {
 	sgc := generator.SineConfig{}
 	err := mapstructure.Decode(cfg, &sgc)
 	if err != nil {
 		return nil, fmt.Errorf("parselingen: could not decode sine generator config: %s", err)
 	}
+
+	logger.Info("parsed sine generator config:", sgc)
+
 	return &sgc, nil
 }
 
@@ -63,6 +72,9 @@ func ParseNoiseTransCfg(cfg interface{}) (*transform.NoiseConfig, error) {
 	if err != nil {
 		return nil, fmt.Errorf("parsenoisetrans: could not decode noise transform config: %s", err)
 	}
+
+	logger.Info("parsed noise transform config:", ntc)
+
 	return &ntc, nil
 }
 
@@ -73,5 +85,8 @@ func ParseSimplePubCfg(cfg interface{}) (*publisher.SimpleConfig, error) {
 	if err != nil {
 		return nil, fmt.Errorf("parsesimplepub: could not decode simple publisher config: %s", err)
 	}
+
+	logger.Info("parsed simple publisher config:", spc)
+
 	return &spc, nil
 }

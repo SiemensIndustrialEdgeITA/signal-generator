@@ -47,8 +47,6 @@ func NewPipeArray(cfgmap interface{}) (*PipesArray, error) {
 		}
 		pipe.AddPublisher(&pub)
 
-		logger.Info("connecting pipes")
-
 		// Connect the stages
 		pipe.Connect()
 

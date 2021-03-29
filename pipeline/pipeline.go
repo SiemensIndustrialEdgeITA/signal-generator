@@ -85,7 +85,7 @@ func (ppl *Pipeline) BuildPubFromMap(pubcfgmap StageCfgMap) (publisher.Publisher
 
 	var pub publisher.Publisher
 	mqttcfg := publisher.MqttConfig{
-		Host:     "ie-databus",
+		Host:     "127.0.0.1",
 		Port:     1883,
 		User:     "simatic",
 		Password: "simatic",
@@ -112,31 +112,36 @@ func (ppl *Pipeline) BuildPubFromMap(pubcfgmap StageCfgMap) (publisher.Publisher
 }
 
 func (ppl *Pipeline) AddGenerator(gen *generator.Generator) {
+	logger.Info("add generator pipeline: ", ppl.cfg.Name)
 	ppl.Gen = *gen
 }
 
 func (ppl *Pipeline) AddTransform(trans *transform.Transform) {
+	logger.Info("add transform pipeline: ", ppl.cfg.Name)
 	ppl.Trans = *trans
 }
 
 func (ppl *Pipeline) AddPublisher(pub *publisher.Publisher) {
+	logger.Info("add publisher pipeline: ", ppl.cfg.Name)
 	ppl.Pub = *pub
 }
 
 // Connect connects the whole pipeline stages
 func (ppl *Pipeline) Connect() {
 
+	logger.Info("connecting pipeline: ", ppl.cfg.Name)
+
 	// Wire up stages with channnels
 	// gen -> c1 -> tr -> c2 -> pub
 	ppl.Gen.SetOut(ppl.GenOut)
-	//	ppl.Trans.SetIn(ppl.GenOut)
-	//	ppl.Trans.SetOut(ppl.TransOut)
+	ppl.Trans.SetIn(ppl.GenOut)
+	ppl.Trans.SetOut(ppl.TransOut)
 	ppl.Pub.SetIn(ppl.TransOut)
 	ppl.Pub.Connect()
 }
 
 func (ppl *Pipeline) Start() {
-	logger.Info("starting pipeline")
+	logger.Info("starting pipeline: ", ppl.cfg.Name)
 
 	// Start publisher in parallel goroutine
 	go ppl.Pub.Start()
@@ -150,6 +155,8 @@ func (ppl *Pipeline) Start() {
 }
 
 func (ppl *Pipeline) Stop() {
+	logger.Info("stopping pipeline: ", ppl.cfg.Name)
+
 	ppl.Gen.Stop()
 	ppl.Trans.Stop()
 	ppl.Pub.Stop()

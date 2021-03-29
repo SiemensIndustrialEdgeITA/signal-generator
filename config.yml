@@ -3,7 +3,7 @@ pipelines:
       generator: 
         type: linear
         config:
-            rate_ms: 1000
+            rate_ms: 1000000000
             coeff: 0.1
             min: 0
             max: 100

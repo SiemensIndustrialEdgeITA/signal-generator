@@ -53,7 +53,7 @@ func (mc *mqttClient) Connect() {
 func (mc *mqttClient) Publish(msg *MqttMsg) {
 	jsonpayload, err := json.Marshal(msg.Payload)
 	if err != nil {
-		logger.Error("Could not publish message: err:", err)
+		logger.Error("could not publish message: err:", err)
 	}
 
 	token := mc.client.Publish(msg.Topic, msg.Qos, msg.Retained, jsonpayload)
@@ -61,9 +61,9 @@ func (mc *mqttClient) Publish(msg *MqttMsg) {
 }
 
 var connectHandler mqtt.OnConnectHandler = func(client mqtt.Client) {
-	logger.Info("Connected")
+	logger.Info("mqtt client connected")
 }
 
 var connectLostHandler mqtt.ConnectionLostHandler = func(client mqtt.Client, err error) {
-	logger.Error("Connect lost:", err.Error())
+	logger.Error("connect lost:", err.Error())
 }
