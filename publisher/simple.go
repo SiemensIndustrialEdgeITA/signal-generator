@@ -10,7 +10,6 @@ type SimpleConfig struct {
 }
 
 type SimpleSink struct {
-	log  *logger.Logger
 	cfg  SimpleConfig
 	quit chan struct{}
 	In   chan types.DataPoint

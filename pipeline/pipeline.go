@@ -111,16 +111,16 @@ func (ppl *Pipeline) BuildPubFromMap(pubcfgmap StageCfgMap) (publisher.Publisher
 	return pub, nil
 }
 
-func (ppl *Pipeline) AddGenerator(gen generator.Generator) {
-	ppl.Gen = gen
+func (ppl *Pipeline) AddGenerator(gen *generator.Generator) {
+	ppl.Gen = *gen
 }
 
-func (ppl *Pipeline) AddTransform(trans transform.Transform) {
-	ppl.Gen = trans
+func (ppl *Pipeline) AddTransform(trans *transform.Transform) {
+	ppl.Gen = *trans
 }
 
-func (ppl *Pipeline) AddPublisher(pub publisher.Publisher) {
-	ppl.Pub = pub
+func (ppl *Pipeline) AddPublisher(pub *publisher.Publisher) {
+	ppl.Pub = *pub
 }
 
 // Connect connects the whole pipeline stages

@@ -58,7 +58,7 @@ func ParseSineGenCfg(cfg interface{}) (*generator.SineConfig, error) {
 
 // ParseNoiseTransCfg parse the noise transformation configuration
 func ParseNoiseTransCfg(cfg interface{}) (*transform.NoiseConfig, error) {
-	ntc := transform.NoiseTransform{}
+	ntc := transform.NoiseConfig{}
 	err := mapstructure.Decode(cfg, &ntc)
 	if err != nil {
 		return nil, fmt.Errorf("parsenoisetrans: could not decode noise transform config: %s", err)
@@ -73,11 +73,5 @@ func ParseSimplePubCfg(cfg interface{}) (*publisher.SimpleConfig, error) {
 	if err != nil {
 		return nil, fmt.Errorf("parsesimplepub: could not decode simple publisher config: %s", err)
 	}
-	return &ntc, nil
+	return &spc, nil
 }
-
-//// ParseTransCfg parse the transform configuration
-//func ParseTransCfg(cfg map[string]interface{}) {}
-//
-//// ParsePubCfg parse the publisher configuration
-//func ParsePubCfg(cfg map[string]interface{}) {}

@@ -15,7 +15,6 @@ type LinearConfig struct {
 }
 
 type LinearGenerator struct {
-	log    *logger.Logger
 	cfg    LinearConfig
 	value  float64
 	ticker *time.Ticker

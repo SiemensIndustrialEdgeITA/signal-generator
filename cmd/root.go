@@ -3,8 +3,10 @@ package cmd
 import (
 	"io/ioutil"
 	"os"
+	"path/filepath"
 
 	"github.com/SiemensIndustrialEdgeITA/signal-generator/pipeline"
+	logger "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v2"
 )
@@ -20,9 +22,12 @@ var rootCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		// Open and read file
-		yamlFile, err := ioutil.ReadFile(cfgFile)
+		absPath, _ := filepath.Abs(cfgFile)
+		yamlFile, err := ioutil.ReadFile(absPath)
 
 		if err != nil {
+
+			logger.Error("could not read file:", cfgFile, " err:", err)
 			os.Exit(1)
 		}
 
@@ -30,12 +35,14 @@ var rootCmd = &cobra.Command{
 		cfgmap := make(map[interface{}]interface{})
 		err = yaml.Unmarshal(yamlFile, &cfgmap)
 		if err != nil {
+			logger.Error("could not unmarshal file:", cfgFile, " err:", err)
 			os.Exit(1)
 		}
 
 		// Create pipes
 		pipe, err := pipeline.NewPipeArray(cfgmap)
 		if err != nil {
+			logger.Error("could not create pipearray:", err)
 			os.Exit(1)
 		}
 
@@ -68,5 +75,5 @@ func init() {
 	//	rootCmd.Flags().StringP("password", "p", "simatic", "databus password")
 	//	rootCmd.MarkFlagRequired("user")
 	//	rootCmd.MarkFlagRequired("password")
-	rootCmd.Flags().StringVar(&cfgFile, "config", "./config.yaml", "config file (default is ./config.yaml)")
+	rootCmd.Flags().StringVar(&cfgFile, "config", "./config.yml", "config file (default is ./config.yml)")
 }

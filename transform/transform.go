@@ -1,8 +1,6 @@
 package transform
 
 import (
-	"fmt"
-
 	"github.com/SiemensIndustrialEdgeITA/signal-generator/types"
 )
 

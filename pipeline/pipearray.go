@@ -26,26 +26,28 @@ func NewPipeArray(cfgmap interface{}) (*PipesArray, error) {
 		// Build and assign the generator
 		gen, err := pipe.BuildGenFromMap(pipecfg.GenCfgMap)
 		if err != nil {
-			logger.Error("pipeline %s: %s", pipe.cfg.Name, err)
+			logger.Error("pipeline:", pipe.cfg.Name, " err:", err)
 			os.Exit(1)
 		}
-		pipe.AddGenerator(gen)
+		pipe.AddGenerator(&gen)
 
 		// Build and assign the transform
 		trans, err := pipe.BuildTransFromMap(pipecfg.TransCfgMap)
 		if err != nil {
-			logger.Error("pipeline %s: %s", pipe.cfg.Name, err)
+			logger.Error("pipeline:", pipe.cfg.Name, " err:", err)
 			os.Exit(1)
 		}
-		pipe.AddTransform(trans)
+		pipe.AddTransform(&trans)
 
 		// Build and assign the publisher
-		pub, err := pipe.BuildPubFromMap(pipecfg.GenCfgMap)
+		pub, err := pipe.BuildPubFromMap(pipecfg.PubCfgMap)
 		if err != nil {
-			logger.Error("pipeline %s: %s", pipe.cfg.Name, err)
+			logger.Error("pipeline:", pipe.cfg.Name, " err:", err)
 			os.Exit(1)
 		}
-		pipe.AddPublisher(pub)
+		pipe.AddPublisher(&pub)
+
+		logger.Info("connecting pipes")
 
 		// Connect the stages
 		pipe.Connect()
