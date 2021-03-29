@@ -89,7 +89,7 @@ func (ppl *Pipeline) BuildPubFromMap(pubcfgmap StageCfgMap) (publisher.Publisher
 		Port:     1883,
 		User:     "simatic",
 		Password: "simatic",
-		ClientId: "signal-generator",
+		ClientId: "signal-generator-" + ppl.cfg.Name,
 	}
 
 	switch pubcfgmap.Type {

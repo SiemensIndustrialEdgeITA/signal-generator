@@ -5,8 +5,8 @@ pipelines:
         config:
             rate_ms: 1000000000
             coeff: 0.1
-            min: 0
             max: 100
+            min: 0
       transform:
         type: noise
         config:
