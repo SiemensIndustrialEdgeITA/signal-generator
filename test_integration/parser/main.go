@@ -2,8 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/mitchellh/mapstructure"
-	"gopkg.in/yaml.v2"
+	c2s "github.com/lumontec/config2struct"
 	"log"
 )
 
@@ -18,8 +17,6 @@ pipelines:
             min: 0
             max: 100
       transforms:
-        - type: none
-          config:
         - type: noise
           config:
             coeff: 0
@@ -32,33 +29,16 @@ pipelines:
 
 func main() {
 
-	m := make(map[interface{}]interface{})
+	config := PipeConfig{}
 
-	err := yaml.Unmarshal([]byte(data), &m)
-	//	err := yaml.Unmarshal([]byte(data), &m)
+	err := c2s.UnmarshalYaml([]byte(data), &config)
+
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
 
-	// Decode configuration
-	d := PipeConfig{}
-	mapstructure.Decode(m, &d)
-	fmt.Printf("configuration %v\n", d)
+	fmt.Printf("configuration %#v\n", config)
+	fmt.Printf("config.Pipelines[0].Name: %s\n", config.Pipelines[0].Name)
+	fmt.Printf("config.Pipelines[0].Name: %d\n", config.Pipelines[0].Generator.RawConf.(LinGenConfig).Rate_ms)
 
-	// Decode pipe array
-	for _, pipemap := range d.Pipelines {
-		p := Pipe{}
-		mapstructure.Decode(pipemap, &p)
-		fmt.Printf("pipe %v\n", p)
-
-		// Decode generator
-		g := StageConfig{}
-		mapstructure.Decode(p.Generator, &g)
-		fmt.Printf("generator %v\n", g)
-
-		// Decode generator config
-		gc := GenConfig{}
-		mapstructure.Decode(g.RawConf, &gc)
-		fmt.Printf("generator config %v\n", gc)
-	}
 }
