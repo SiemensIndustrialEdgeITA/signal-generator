@@ -8,7 +8,7 @@ type Pipe struct {
 	Name      string           `c2s:"name"`
 	Generator DynGenConfig     `c2s:"generator,dynamic=type"`
 	Transform []DynTransConfig `c2s:"transforms,dynamic=type"`
-	Sinks     []SinkConfig     `c2s:"sinks"`
+	Sinks     []DynSinkConfig  `c2s:"sinks,dynamic=type"`
 }
 
 type DynGenConfig struct {
@@ -34,8 +34,9 @@ type NoiseTransConfig struct {
 	Max   int     `c2s:"max"`
 }
 
-type SinkConfig struct {
-	Type string `c2s:"type"`
+type DynSinkConfig struct {
+	Type    string      `c2s:"type"`
+	RawConf interface{} `c2s:"config"`
 }
 
 func (dg *DynGenConfig) SetDynamicType(Type string) {
@@ -51,10 +52,24 @@ func (dt *DynTransConfig) SetDynamicType(Type string) {
 	switch Type {
 	case "none":
 		{
+			dt.RawConf = nil
 		}
 	case "noise":
 		{
 			dt.RawConf = NoiseTransConfig{}
+		}
+	}
+}
+
+func (ds *DynSinkConfig) SetDynamicType(Type string) {
+	switch Type {
+	case "simple":
+		{
+			ds.RawConf = nil
+		}
+	case "dataservice":
+		{
+			ds.RawConf = nil
 		}
 	}
 }
