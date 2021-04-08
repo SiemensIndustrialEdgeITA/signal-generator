@@ -1,4 +1,4 @@
-package pipeline
+package pipelines
 
 import (
 	logger "github.com/sirupsen/logrus"
@@ -9,22 +9,16 @@ type PipesArray struct {
 	Pipes []Pipeline
 }
 
-func NewPipeArray(cfgmap interface{}) (*PipesArray, error) {
+func NewPipeArray(cfg *Config) (*PipesArray, error) {
 
 	parr := &PipesArray{}
 
-	cfg, err := ParseConfig(cfgmap)
-	if err != nil {
-		logger.Error("pipearray: %s", err)
-		os.Exit(1)
-	}
+	for _, pipecfg := range cfg.PipeArrCfg {
 
-	for _, pipecfg := range cfg.PipesCfgMap {
-
-		pipe := NewPipeline(PipeConfig{Name: pipecfg.NameCfgMap})
+		pipe := NewPipeline(pipecfg)
 
 		// Build and assign the generator
-		gen, err := pipe.BuildGenFromMap(pipecfg.GenCfgMap)
+		gen, err := pipe.BuildGenerator(pipecfg.GenCfg)
 		if err != nil {
 			logger.Error("pipeline:", pipe.cfg.Name, " err:", err)
 			os.Exit(1)
@@ -32,7 +26,7 @@ func NewPipeArray(cfgmap interface{}) (*PipesArray, error) {
 		pipe.AddGenerator(&gen)
 
 		// Build and assign the transform
-		trans, err := pipe.BuildTransFromMap(pipecfg.TransCfgMap)
+		trans, err := pipe.BuildTransform(pipecfg.TransfCfg)
 		if err != nil {
 			logger.Error("pipeline:", pipe.cfg.Name, " err:", err)
 			os.Exit(1)
@@ -40,7 +34,7 @@ func NewPipeArray(cfgmap interface{}) (*PipesArray, error) {
 		pipe.AddTransform(&trans)
 
 		// Build and assign the publisher
-		pub, err := pipe.BuildPubFromMap(pipecfg.PubCfgMap)
+		pub, err := pipe.BuildPublisher(pipecfg.SinkCfg)
 		if err != nil {
 			logger.Error("pipeline:", pipe.cfg.Name, " err:", err)
 			os.Exit(1)

@@ -1,4 +1,4 @@
-package pipeline
+package pipelines
 
 import (
 	"fmt"
@@ -9,10 +9,6 @@ import (
 	"github.com/SiemensIndustrialEdgeITA/signal-generator/types"
 	logger "github.com/sirupsen/logrus"
 )
-
-type PipeConfig struct {
-	Name string
-}
 
 type Pipeline struct {
 	cfg      PipeConfig
@@ -35,22 +31,22 @@ func NewPipeline(pcfg PipeConfig) Pipeline {
 }
 
 // BuildGenFromMap builds the specific generator type
-func (ppl *Pipeline) BuildGenFromMap(gencfgmap StageCfgMap) (generator.Generator, error) {
+func (ppl *Pipeline) BuildGenerator(gencfg DynGenConfig) (generator.Generator, error) {
 
 	var gen generator.Generator
 
-	switch gencfgmap.Type {
+	switch gencfg.Type {
 	case "linear":
 		{
-			gencfg, err := ParseLinGenCfg(gencfgmap.RawConf)
-			if err != nil {
-				return nil, fmt.Errorf("build generator: %s", err)
+			gencfg, ok := gencfg.RawConf.(generator.LinearConfig)
+			if !ok {
+				return nil, fmt.Errorf("cannot assert linear")
 			}
-			gen = generator.NewLinearGen(*gencfg)
+			gen = generator.NewLinearGen(gencfg)
 		}
 	default:
 		{
-			return nil, fmt.Errorf("build generator: could not find type %s", gencfgmap.Type)
+			return nil, fmt.Errorf("could not find type %s", gencfg.Type)
 		}
 	}
 
@@ -58,22 +54,22 @@ func (ppl *Pipeline) BuildGenFromMap(gencfgmap StageCfgMap) (generator.Generator
 }
 
 // BuildTransFromMap builds the specific transform type
-func (ppl *Pipeline) BuildTransFromMap(transcfgmap StageCfgMap) (transform.Transform, error) {
+func (ppl *Pipeline) BuildTransform(transcfg DynTransConfig) (transform.Transform, error) {
 
 	var trans transform.Transform
 
-	switch transcfgmap.Type {
+	switch transcfg.Type {
 	case "noise":
 		{
-			transcfg, err := ParseNoiseTransCfg(transcfgmap.RawConf)
-			if err != nil {
-				return nil, fmt.Errorf("build generator: %s", err)
+			transcfg, ok := transcfg.RawConf.(transform.NoiseConfig)
+			if !ok {
+				return nil, fmt.Errorf("cannot assert noise")
 			}
-			trans = transform.NewNoiseTrans(*transcfg)
+			trans = transform.NewNoiseTrans(transcfg)
 		}
 	default:
 		{
-			return nil, fmt.Errorf("build transform: could not find type %s", transcfgmap.Type)
+			return nil, fmt.Errorf("could not find type %s", transcfg.Type)
 		}
 	}
 
@@ -81,7 +77,7 @@ func (ppl *Pipeline) BuildTransFromMap(transcfgmap StageCfgMap) (transform.Trans
 }
 
 // BuildPubFromMap builds the specific publisher type
-func (ppl *Pipeline) BuildPubFromMap(pubcfgmap StageCfgMap) (publisher.Publisher, error) {
+func (ppl *Pipeline) BuildPublisher(sinkcfg DynSinkConfig) (publisher.Publisher, error) {
 
 	var pub publisher.Publisher
 	mqttcfg := publisher.MqttConfig{
@@ -92,19 +88,17 @@ func (ppl *Pipeline) BuildPubFromMap(pubcfgmap StageCfgMap) (publisher.Publisher
 		ClientId: "signal-generator-" + ppl.cfg.Name,
 	}
 
-	switch pubcfgmap.Type {
+	switch sinkcfg.Type {
 	case "simple":
 		{
-			pubcfg, err := ParseSimplePubCfg(pubcfgmap.RawConf)
-			if err != nil {
-				return nil, fmt.Errorf("build generator: %s", err)
-			}
+			// Simple config is not read from file
+			pubcfg := publisher.SimpleConfig{}
 			pubcfg.Mqtt = mqttcfg
-			pub = publisher.NewSimplePublisher(*pubcfg)
+			pub = publisher.NewSimplePublisher(pubcfg)
 		}
 	default:
 		{
-			return nil, fmt.Errorf("build publisher: could not find type %s", pubcfgmap.Type)
+			return nil, fmt.Errorf("could not find type %s", sinkcfg.Type)
 		}
 	}
 

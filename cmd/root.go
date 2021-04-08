@@ -5,10 +5,10 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/SiemensIndustrialEdgeITA/signal-generator/pipeline"
+	"github.com/SiemensIndustrialEdgeITA/signal-generator/pipelines"
+	c2s "github.com/lumontec/config2struct"
 	logger "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"gopkg.in/yaml.v2"
 )
 
 var cfgFile string
@@ -31,16 +31,16 @@ var rootCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		// Unmarshal yaml to map object
-		cfgmap := make(map[interface{}]interface{})
-		err = yaml.Unmarshal(yamlFile, &cfgmap)
+		// Unmarshal yaml to global config struct
+		config := pipelines.Config{}
+		err = c2s.UnmarshalYaml(yamlFile, &config)
 		if err != nil {
 			logger.Error("could not unmarshal file:", cfgFile, " err:", err)
 			os.Exit(1)
 		}
 
 		// Create pipes
-		pipe, err := pipeline.NewPipeArray(cfgmap)
+		pipe, err := pipelines.NewPipeArray(&config)
 		if err != nil {
 			logger.Error("could not create pipearray:", err)
 			os.Exit(1)

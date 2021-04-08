@@ -8,10 +8,10 @@ import (
 )
 
 type LinearConfig struct {
-	SampleRate int     `mapstructure:"rate_ms"`
-	Coeff      float64 `mapstructure:"coeff"`
-	MinVal     float64 `mapstructure:"min"`
-	MaxVal     float64 `mapstructure:"max"`
+	SampleRate int     `c2s:"rate_ms"`
+	Coeff      float64 `c2s:"coeff"`
+	MinVal     float64 `c2s:"min"`
+	MaxVal     float64 `c2s:"max"`
 }
 
 type LinearGenerator struct {

@@ -15,4 +15,4 @@ pipelines:
           max: 10
       publisher:
         type: simple
-        config:
+        config: ''
