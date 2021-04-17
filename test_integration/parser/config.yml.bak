@@ -1,0 +1,43 @@
+pipelines:
+    - name: "first"
+      generator: 
+        type: linear
+        config:
+            rate_ms: 1000
+            coeff: 0.0
+            min: 0
+            max: 100
+      transforms:
+        - type: noise
+          config:
+            coeff: 0.0
+            min: 0
+            max: 10
+      sinks:
+        - type: simple
+          config: ''
+        - type: dataservice
+          config: ''
+    - name: "second"
+      generator: 
+        type: linear
+        config:
+            rate_ms: 1000
+            coeff: 0.1
+            min: 0
+            max: 100
+      transforms:
+        - type: noise
+          config:
+            coeff: 0.0
+            min: 0
+            max: 10
+        - type: none
+          config: ''
+      sinks:
+        - type: simple
+          config: ''
+        - type: dataservice
+          config: ''
+
+       

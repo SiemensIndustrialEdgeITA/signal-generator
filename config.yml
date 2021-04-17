@@ -5,14 +5,14 @@ pipelines:
         config:
             rate_ms: 1000
             coeff: 0.1
-            max: 100
-            min: 0
+            max: 100.0
+            min: 0.0
       transform:
         type: noise
         config:
-          coeff: 0
-          min: 0
-          max: 10
+          coeff: 0.0
+          min: 0.0
+          max: 10.0
       publisher:
         type: simple
         config: ''

@@ -1,42 +1,42 @@
 package main
 
 type PipeConfig struct {
-	Pipelines []Pipe `c2s:"pipelines"`
+	Pipelines []Pipe `mirror:"pipelines"`
 }
 
 type Pipe struct {
-	Name      string           `c2s:"name"`
-	Generator DynGenConfig     `c2s:"generator,dynamic=type"`
-	Transform []DynTransConfig `c2s:"transforms,dynamic=type"`
-	Sinks     []DynSinkConfig  `c2s:"sinks,dynamic=type"`
+	Name      string           `mirror:"name"`
+	Generator DynGenConfig     `mirror:"generator,dynamic=type"`
+	Transform []DynTransConfig `mirror:"transforms,dynamic=type"`
+	Sinks     []DynSinkConfig  `mirror:"sinks,dynamic=type"`
 }
 
 type DynGenConfig struct {
-	Type    string      `c2s:"type"`
-	RawConf interface{} `c2s:"config"`
+	Type    string      `mirror:"type"`
+	RawConf interface{} `mirror:"config"`
 }
 
 type LinGenConfig struct {
-	Rate_ms int     `c2s:"rate_ms"`
-	Coeff   float64 `c2s:"coeff"`
-	Min     int     `c2s:"min"`
-	Max     int     `c2s:"max"`
+	Rate_ms int     `mirror:"rate_ms"`
+	Coeff   float64 `mirror:"coeff"`
+	Min     int     `mirror:"min"`
+	Max     int     `mirror:"max"`
 }
 
 type DynTransConfig struct {
-	Type    string      `c2s:"type"`
-	RawConf interface{} `c2s:"config"`
+	Type    string      `mirror:"type"`
+	RawConf interface{} `mirror:"config"`
 }
 
 type NoiseTransConfig struct {
-	Coeff float64 `c2s:"coeff"`
-	Min   int     `c2s:"min"`
-	Max   int     `c2s:"max"`
+	Coeff float64 `mirror:"coeff"`
+	Min   int     `mirror:"min"`
+	Max   int     `mirror:"max"`
 }
 
 type DynSinkConfig struct {
-	Type    string      `c2s:"type"`
-	RawConf interface{} `c2s:"config"`
+	Type    string      `mirror:"type"`
+	RawConf interface{} `mirror:"config"`
 }
 
 func (dg *DynGenConfig) SetDynamicType(Type string) {

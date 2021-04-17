@@ -8,9 +8,9 @@ import (
 )
 
 type SineConfig struct {
-	SampleRate int     `c2s:"rate_ms"`
-	Period     float64 `c2s:"period"`
-	Amplitude  float64 `c2s:"amplitude"`
+	SampleRate int     `mirror:"rate_ms"`
+	Period     float64 `mirror:"period"`
+	Amplitude  float64 `mirror:"amplitude"`
 }
 
 type SineGenerator struct {

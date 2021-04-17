@@ -8,10 +8,10 @@ import (
 )
 
 type LinearConfig struct {
-	SampleRate int     `c2s:"rate_ms"`
-	Coeff      float64 `c2s:"coeff"`
-	MinVal     float64 `c2s:"min"`
-	MaxVal     float64 `c2s:"max"`
+	SampleRate int     `mirror:"rate_ms"`
+	Coeff      float64 `mirror:"coeff"`
+	MinVal     float64 `mirror:"min"`
+	MaxVal     float64 `mirror:"max"`
 }
 
 type LinearGenerator struct {

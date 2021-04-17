@@ -7,19 +7,19 @@ import (
 )
 
 type Config struct {
-	PipeArrCfg []PipeConfig `c2s:"pipelines"`
+	PipeArrCfg []PipeConfig `mirror:"pipelines"`
 }
 
 type PipeConfig struct {
-	Name      string         `c2s:"name"`
-	GenCfg    DynGenConfig   `c2s:"generator,dynamic=type"`
-	TransfCfg DynTransConfig `c2s:"transform,dynamic=type"`
-	SinkCfg   DynSinkConfig  `c2s:"publisher,dynamic=type"`
+	Name      string         `mirror:"name"`
+	GenCfg    DynGenConfig   `mirror:"generator,dynamic=type"`
+	TransfCfg DynTransConfig `mirror:"transform,dynamic=type"`
+	SinkCfg   DynSinkConfig  `mirror:"publisher,dynamic=type"`
 }
 
 type DynGenConfig struct {
-	Type    string      `c2s:"type"`
-	RawConf interface{} `c2s:"config"`
+	Type    string      `mirror:"type"`
+	RawConf interface{} `mirror:"config"`
 }
 
 func (dg *DynGenConfig) SetDynamicType(Type string) {
@@ -32,8 +32,8 @@ func (dg *DynGenConfig) SetDynamicType(Type string) {
 }
 
 type DynTransConfig struct {
-	Type    string      `c2s:"type"`
-	RawConf interface{} `c2s:"config"`
+	Type    string      `mirror:"type"`
+	RawConf interface{} `mirror:"config"`
 }
 
 func (dt *DynTransConfig) SetDynamicType(Type string) {
@@ -50,8 +50,8 @@ func (dt *DynTransConfig) SetDynamicType(Type string) {
 }
 
 type DynSinkConfig struct {
-	Type    string      `c2s:"type"`
-	RawConf interface{} `c2s:"config"`
+	Type    string      `mirror:"type"`
+	RawConf interface{} `mirror:"config"`
 }
 
 func (ds *DynSinkConfig) SetDynamicType(Type string) {

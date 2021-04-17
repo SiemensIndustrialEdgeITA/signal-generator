@@ -2,60 +2,39 @@ package main
 
 import (
 	"fmt"
-	c2s "github.com/lumontec/config2struct"
+	mirror "github.com/lumontec/mirror"
+	//	"gopkg.in/yaml.v2"
+	"io/ioutil"
 	"log"
+	"os"
+	"path/filepath"
 )
-
-var data = `
-pipelines:
-    - name: "first"
-      generator: 
-        type: linear
-        config:
-            rate_ms: 1000
-            coeff: 0.1
-            min: 0
-            max: 100
-      transforms:
-        - type: noise
-          config:
-            coeff: 0
-            min: 0
-            max: 10
-      sinks:
-        - type: simple
-          config: ''
-        - type: dataservice
-          config: ''
-    - name: "second"
-      generator: 
-        type: linear
-        config:
-            rate_ms: 1000
-            coeff: 0.1
-            min: 0
-            max: 100
-      transforms:
-        - type: noise
-          config:
-            coeff: 0
-            min: 0
-            max: 10
-        - type: none
-          config: ''
-      sinks:
-        - type: simple
-          config: ''
-        - type: dataservice
-          config: ''
-
-`
 
 func main() {
 
+	cfgFile := "./config.yml"
 	config := PipeConfig{}
 
-	err := c2s.UnmarshalYaml([]byte(data), &config)
+	// Open and read file
+	absPath, _ := filepath.Abs(cfgFile)
+	yamlFile, err := ioutil.ReadFile(absPath)
+
+	if err != nil {
+
+		fmt.Println("could not read file:", cfgFile, " err:", err)
+		os.Exit(1)
+	}
+
+	//	rawmap := make(map[string]interface{})
+	//
+	//	err = yaml.Unmarshal(yamlFile, rawmap)
+	//	if err != nil {
+	//		return
+	//	}
+	//
+	//	fmt.Printf("unmarshallled: %#v", rawmap)
+
+	err = mirror.UnmarshalYaml(yamlFile, &config)
 
 	if err != nil {
 		log.Fatalf("error: %v", err)

@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 
 	"github.com/SiemensIndustrialEdgeITA/signal-generator/pipelines"
-	c2s "github.com/lumontec/config2struct"
+	mirror "github.com/lumontec/mirror"
 	logger "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
@@ -33,7 +33,7 @@ var rootCmd = &cobra.Command{
 
 		// Unmarshal yaml to global config struct
 		config := pipelines.Config{}
-		err = c2s.UnmarshalYaml(yamlFile, &config)
+		err = mirror.UnmarshalYaml(yamlFile, &config)
 		if err != nil {
 			logger.Error("could not unmarshal file:", cfgFile, " err:", err)
 			os.Exit(1)
